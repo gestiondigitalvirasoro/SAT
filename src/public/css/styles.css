@@ -1,0 +1,3 @@
+/* styles.css - small overrides since large styles are inlined in header partial for convenience */
+/* You can move styles from header.ejs into this file if preferred */
+body { background: #fff; }

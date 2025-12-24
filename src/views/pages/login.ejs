@@ -1,0 +1,96 @@
+<section class="login-hero">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <svg width="80" height="80" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Gradientes -->
+                        <defs>
+                            <linearGradient id="gearGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FFB366;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#FF8C42;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#E55A00;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="innerCircle" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#D4835C;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#B8652F;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Engranaje exterior -->
+                        <path d="M100 10 
+                                 L118 22 L130 12 L142 24 L155 18 L162 32 L178 38 L168 50 L185 62 L168 74 L178 86 L162 92 L155 106 L142 100 L130 112 L118 102 L100 114 
+                                 L82 102 L70 112 L58 100 L45 106 L38 92 L22 86 L32 74 L15 62 L32 50 L22 38 L38 32 L45 18 L58 24 L70 12 L82 22 Z" 
+                              fill="url(#gearGradient)" stroke="none"/>
+                        
+                        <!-- Círculo interior blanco -->
+                        <circle cx="100" cy="62" r="40" fill="white" stroke="#C45A00" stroke-width="4"/>
+                        
+                        <!-- Círculo interior con gradiente marrón -->
+                        <circle cx="100" cy="62" r="32" fill="none" stroke="url(#innerCircle)" stroke-width="3"/>
+                        
+                        <!-- Filamento curvo en forma de Q -->
+                        <g transform="translate(100,62)">
+                            <path d="M-15 -12 Q-8 -18 0 -12 Q8 -6 4 0 Q0 6 -4 12 Q-8 18 0 22 Q8 26 15 22" 
+                                  stroke="#8B4513" stroke-width="4" fill="none" stroke-linecap="round"/>
+                            <!-- Cola del filamento -->
+                            <path d="M12 18 L18 24" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+                        </g>
+                        
+                        <!-- Base roscada espiral detallada -->
+                        <g transform="translate(100,110)">
+                            <!-- Líneas horizontales de la rosca -->
+                            <rect x="-12" y="0" width="24" height="3" fill="#8B4513" rx="1.5"/>
+                            <rect x="-10" y="5" width="20" height="2.5" fill="#A0572A" rx="1"/>
+                            <rect x="-12" y="9" width="24" height="3" fill="#8B4513" rx="1.5"/>
+                            <rect x="-10" y="14" width="20" height="2.5" fill="#A0572A" rx="1"/>
+                            <rect x="-12" y="18" width="24" height="3" fill="#8B4513" rx="1.5"/>
+                            <rect x="-8" y="23" width="16" height="2.5" fill="#A0572A" rx="1"/>
+                            <rect x="-10" y="27" width="20" height="3" fill="#8B4513" rx="1.5"/>
+                            <rect x="-6" y="32" width="12" height="2.5" fill="#A0572A" rx="1"/>
+                            <rect x="-8" y="36" width="16" height="2.5" fill="#8B4513" rx="1"/>
+                            <rect x="-4" y="40" width="8" height="2" fill="#A0572A" rx="1"/>
+                            <rect x="-6" y="43" width="12" height="2" fill="#8B4513" rx="1"/>
+                            <rect x="-3" y="46" width="6" height="1.5" fill="#A0572A" rx="0.5"/>
+                        </g>
+                    </svg>
+                </div>
+                <h1>POTENCIA ACTIVA</h1>
+                <p>Sistema de Alerta Temprana</p>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email o Usuario</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span class="checkmark"></span>
+                        Recordarme
+                    </label>
+                    <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-login">Iniciar Sesión</button>
+                
+                <div class="login-divider">
+                    <span>o</span>
+                </div>
+                
+                <button type="button" class="btn btn-secondary btn-register">Crear Cuenta</button>
+            </form>
+            
+            <div class="login-footer">
+                <p>¿Necesitas ayuda? <a href="#contacto">Contáctanos</a></p>
+            </div>
+        </div>
+    </div>
+</section>

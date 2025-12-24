@@ -10,3 +10,7 @@ exports.faq = (req, res) => {
 exports.about = (req, res) => {
   res.render('layouts/main', { title: 'SAT - About', page: '../pages/about' });
 };
+
+exports.login = (req, res) => {
+  res.render('layouts/main', { title: 'POTENCIA ACTIVA - Login', page: '../pages/login' });
+};

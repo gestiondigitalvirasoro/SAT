@@ -2,9 +2,21 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'mi-secreto-demo',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { 
+    secure: false, // true en producción con HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
+}));
 
 // Middlewares
 app.use(express.json());
@@ -17,9 +29,23 @@ app.set('view engine', 'ejs');
 // Static files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Middleware de demostración: crear sesión automática
+app.use((req, res, next) => {
+  if (!req.session.user && req.path === '/dashboard') {
+    req.session.user = {
+      id: 1,
+      name: 'Administrador Demo',
+      email: 'admin@potenciaactiva.com',
+      role: 'admin'
+    };
+  }
+  next();
+});
+
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/api', require('./routes/api'));
+app.use('/auth', require('./routes/auth'));
 
 // 404
 app.use((req, res) => {

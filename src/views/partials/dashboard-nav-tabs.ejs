@@ -1,0 +1,175 @@
+<style>
+    .dashboard-nav {
+        background: white !important;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 150px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        min-height: 60px;
+        visibility: visible !important;
+    }
+
+    .nav-tabs {
+        display: flex !important;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        visibility: visible !important;
+    }
+
+    .tab-btn {
+        padding: 8px 16px;
+        border: none;
+        background: #e8e8e8 !important;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px !important;
+        font-weight: 500;
+        transition: all 0.3s;
+        color: #333 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .tab-btn:hover {
+        background: #d0d0d0;
+    }
+
+    .tab-btn.active {
+        background: #4a8dc5;
+        color: white;
+    }
+
+    .company-filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .company-filter label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .company-filter select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    .tab-dropdown-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .tab-dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #4a8dc5;
+        min-width: 280px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 1000;
+        top: 100%;
+        left: 0;
+        border-radius: 0 0 4px 4px;
+        margin-top: 2px;
+    }
+    
+    .tab-dropdown-menu.active {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dropdown-header {
+        background-color: #5a9dd5;
+        color: white;
+        padding: 12px 16px;
+        font-weight: 600;
+        border-bottom: 1px solid #3a7cb5;
+    }
+    
+    .dropdown-item {
+        display: block;
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        transition: background-color 0.2s;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        font-size: 13px;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #3a7cb5;
+    }
+    
+    .dropdown-item:last-child {
+        border-bottom: none;
+        border-radius: 0 0 4px 4px;
+    }
+</style>
+
+<div class="dashboard-nav">
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('visitas')">Visitas</button>
+        <div class="tab-dropdown-wrapper">
+            <button class="tab-btn" onclick="toggleTabDropdown(event)">Reportes ▼</button>
+            <div class="tab-dropdown-menu">
+                <div class="dropdown-header">Monitor</div>
+                <a href="/reports/planes-accion" class="dropdown-item">Planes de acción por fecha</a>
+                <a href="/reports/visitas-formulario" class="dropdown-item">Totales de visitas por formulario</a>
+                <a href="/reports/vencimientos-equipos" class="dropdown-item">Vencimientos de Equipos - Extintores</a>
+                <a href="/reports/calendario-clientes" class="dropdown-item">Vista Calendario por clientes</a>
+                <a href="/reports/calendario-servicios" class="dropdown-item">Vista Calendario por servicios</a>
+                <a href="/reports/notificaciones-servicios" class="dropdown-item">Detalle de Notificaciones de Servicios</a>
+            </div>
+        </div>
+        <button class="tab-btn" onclick="showTab('operaciones')">Operaciones</button>
+        <button class="tab-btn" onclick="showTab('maestros')">Maestros</button>
+    </div>
+    <div class="company-filter">
+        <label>Empresa:</label>
+        <select id="companySelect">
+            <option value="todos">– TODOS</option>
+            <option value="constructora-abc">Constructora ABC</option>
+            <option value="industrias-xyz">Industrias XYZ</option>
+            <option value="comercial-norte">Comercial Norte</option>
+        </select>
+    </div>
+</div>
+
+<script>
+    function toggleTabDropdown(event) {
+        event.stopPropagation();
+        const menu = event.target.nextElementSibling;
+        menu.classList.toggle('active');
+        
+        document.addEventListener('click', function closeDropdown() {
+            menu.classList.remove('active');
+            document.removeEventListener('click', closeDropdown);
+        });
+    }
+
+    function showTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        const tabElement = document.getElementById(tabName + '-tab');
+        if (tabElement) {
+            tabElement.classList.add('active');
+        }
+        
+        event.target.classList.add('active');
+    }
+</script>

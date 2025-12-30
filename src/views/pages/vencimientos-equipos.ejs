@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head', { title: 'Vencimientos de Equipos - Potencia Activa' }) %>
+<body>
+    <%- include('../partials/navbar-dashboard') %>
+    <%- include('../partials/dashboard-nav-tabs') %>
+    
+    <div class="page-container" style="margin-top: 20px;">
+        <div class="page-header">
+            <h1>Vencimientos de Equipos - Extintores</h1>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="empresa">Empresa</label>
+                <select id="empresa" class="form-control">
+                    <option value="">-- TODOS</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="estado">Estado</label>
+                <select id="estado" class="form-control">
+                    <option value="">-- TODOS</option>
+                    <option value="vigente">Vigente</option>
+                    <option value="proximo-vencer">Próximo a vencer</option>
+                    <option value="vencido">Vencido</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="buscarVencimientos()">Buscar</button>
+        </div>
+
+        <div class="results-section">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Ubicación</th>
+                        <th>Tipo de Extintor</th>
+                        <th>Última Revisión</th>
+                        <th>Próximo Vencimiento</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-vencimientos">
+                    <tr>
+                        <td colspan="6" class="text-center">Cargando datos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <style>
+        .page-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 13px;
+        }
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+        .btn-primary {
+            background-color: #4a8dc5;
+            color: white;
+        }
+        .results-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table thead th {
+            background-color: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+        .table tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-vigente {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-proximo {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-vencido {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .text-center {
+            text-align: center;
+            color: #999;
+        }
+    </style>
+
+    <script>
+        async function buscarVencimientos() {
+            const empresa = document.getElementById('empresa').value;
+            const estado = document.getElementById('estado').value;
+
+            const params = new URLSearchParams();
+            if (empresa) params.append('empresa_id', empresa);
+            if (estado) params.append('estado', estado);
+
+            try {
+                const response = await fetch(`/api/vencimientos-equipos?${params}`);
+                const datos = await response.json();
+                
+                const tbody = document.getElementById('tabla-vencimientos');
+                tbody.innerHTML = '';
+
+                if (datos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay datos</td></tr>';
+                    return;
+                }
+
+                datos.forEach(item => {
+                    const badgeClass = `badge-${item.estado}`;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.empresa}</td>
+                        <td>${item.ubicacion}</td>
+                        <td>${item.tipo_extintor}</td>
+                        <td>${new Date(item.ultima_revision).toLocaleDateString('es-AR')}</td>
+                        <td>${new Date(item.proximo_vencimiento).toLocaleDateString('es-AR')}</td>
+                        <td><span class="badge ${badgeClass}">${item.estado}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const empresasResponse = await fetch('/api/empresas');
+            const empresas = await empresasResponse.json();
+            const select = document.getElementById('empresa');
+            empresas.forEach(e => {
+                const option = document.createElement('option');
+                option.value = e.id;
+                option.text = e.nombre;
+                select.appendChild(option);
+            });
+            buscarVencimientos();
+        });
+    </script>
+</body>
+</html>

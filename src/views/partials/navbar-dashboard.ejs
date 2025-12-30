@@ -1,0 +1,43 @@
+<nav style="display: block;">
+    <div class="nav-container">
+        <div class="nav-logo">⚙️ POTENCIA ACTIVA</div>
+        
+        <div class="nav-spacer"></div>
+        
+        <div class="nav-auth">
+            <% if (user && typeof user === 'object' && user.name) { %>
+                <div class="user-profile">
+                    <div class="user-info">
+                        <div class="user-name"><%= user.name %></div>
+                        <% if (user.email) { %>
+                            <div class="user-email"><%= user.email %></div>
+                        <% } %>
+                    </div>
+                    <button onclick="logout();" class="btn-logout">Cerrar Sesión</button>
+                </div>
+            <% } else { %>
+                <ul class="nav-menu">
+                    <li><a href="/">Home</a></li>
+                </ul>
+                <a href="/login" class="btn btn-login">Iniciar Sesión</a>
+            <% } %>
+        </div>
+    </div>
+</nav>
+
+<script>
+async function logout() {
+    try {
+        const response = await fetch('/auth/logout', {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            window.location.href = '/';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        window.location.href = '/';
+    }
+}
+</script>

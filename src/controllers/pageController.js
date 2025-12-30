@@ -14,3 +14,7 @@ exports.about = (req, res) => {
 exports.login = (req, res) => {
   res.render('layouts/main', { title: 'POTENCIA ACTIVA - Login', page: '../pages/login' });
 };
+
+exports.dashboard = (req, res) => {
+  res.render('layouts/dashboard', { title: 'POTENCIA ACTIVA - Dashboard', page: '../pages/dashboard-new', user: req.session.user });
+};

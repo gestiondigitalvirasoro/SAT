@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head', { title: 'Notificaciones de Servicios - Potencia Activa' }) %>
+<body>
+    <%- include('../partials/navbar-dashboard') %>
+    <%- include('../partials/dashboard-nav-tabs') %>
+    
+    <div class="page-container" style="margin-top: 20px;">
+        <div class="page-header">
+            <h1>Notificaciones de servicios</h1>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="estado">Estado</label>
+                <select id="estado" class="form-control">
+                    <option value="">-- TODOS</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="enviada">Enviada</option>
+                    <option value="leida">Leída</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" class="form-control">
+                    <option value="">-- TODOS</option>
+                    <option value="alerta">Alerta</option>
+                    <option value="recordatorio">Recordatorio</option>
+                    <option value="confirmacion">Confirmación</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="buscarNotificaciones()">Buscar</button>
+        </div>
+
+        <div class="results-section">
+            <div id="notificaciones-lista" class="notificaciones-lista"></div>
+        </div>
+    </div>
+
+    <style>
+        .page-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 13px;
+        }
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+        .btn-primary {
+            background-color: #4a8dc5;
+            color: white;
+        }
+        .results-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .notificaciones-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .notificacion-item {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            background: white;
+            border-left: 4px solid #4a8dc5;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .notificacion-item:hover {
+            background: #f9f9f9;
+        }
+        .notificacion-item.no-leida {
+            background: #f0f6fc;
+            border-left-color: #4a8dc5;
+        }
+        .notificacion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .notificacion-titulo {
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+        .notificacion-tipo {
+            font-size: 11px;
+            padding: 4px 8px;
+            background: #e3f2fd;
+            color: #4a8dc5;
+            border-radius: 3px;
+        }
+        .notificacion-estado {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 3px;
+        }
+        .estado-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .estado-enviada {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .estado-leida {
+            background: #d4edda;
+            color: #155724;
+        }
+        .notificacion-fecha {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        .notificacion-descripcion {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+
+    <script>
+        async function buscarNotificaciones() {
+            const estado = document.getElementById('estado').value;
+            const tipo = document.getElementById('tipo').value;
+
+            const params = new URLSearchParams();
+            if (estado) params.append('estado', estado);
+            if (tipo) params.append('tipo', tipo);
+
+            try {
+                const response = await fetch(`/api/notificaciones-servicios?${params}`);
+                const notificaciones = await response.json();
+                
+                mostrarNotificaciones(notificaciones);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function mostrarNotificaciones(notificaciones) {
+            const container = document.getElementById('notificaciones-lista');
+            
+            if (!notificaciones || notificaciones.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No hay notificaciones para mostrar</p>';
+                return;
+            }
+            
+            container.innerHTML = notificaciones.map(n => `
+                <div class="notificacion-item ${n.estado === 'pendiente' ? 'no-leida' : ''}">
+                    <div class="notificacion-header">
+                        <div>
+                            <span class="notificacion-titulo">${n.titulo}</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <span class="notificacion-tipo">${n.tipo}</span>
+                            <span class="notificacion-estado estado-${n.estado}">${n.estado}</span>
+                        </div>
+                    </div>
+                    <div class="notificacion-fecha">${new Date(n.fecha).toLocaleDateString('es-ES', {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}</div>
+                    <div class="notificacion-descripcion">${n.descripcion}</div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', buscarNotificaciones);
+    </script>
+</body>
+</html>

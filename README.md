@@ -79,6 +79,14 @@ proyect-main/
 - `GET /api/reports/:id` - Obtener reporte por ID
 - `PUT /api/reports/:id` - Actualizar reporte
 
+### Reportes
+- `GET /reports/planes-accion` - Planes de acción por fecha
+- `GET /reports/visitas-formulario` - Totales de visitas por formulario
+- `GET /reports/vencimientos-equipos` - Vencimientos de Equipos - Extintores
+- `GET /reports/calendario-clientes` - Vista Calendario por clientes
+- `GET /reports/calendario-servicios` - Vista Calendario por servicios
+- `GET /reports/notificaciones-servicios` - Detalle de Notificaciones de Servicios
+
 ## Tecnologías
 
 - **Backend:** Node.js + Express

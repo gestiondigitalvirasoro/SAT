@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head', { title: 'Vista Calendario por Servicios - Potencia Activa' }) %>
+<body>
+    <%- include('../partials/navbar-dashboard') %>
+    <%- include('../partials/dashboard-nav-tabs') %>
+    
+    <div class="page-container" style="margin-top: 20px;">
+        <div class="page-header">
+            <h1>Vista Calendario por servicios</h1>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="servicio">Tipo de Servicio</label>
+                <select id="servicio" class="form-control">
+                    <option value="">-- TODOS</option>
+                    <option value="inspeccion">Inspección</option>
+                    <option value="mantenimiento">Mantenimiento</option>
+                    <option value="reparacion">Reparación</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="mes">Mes</label>
+                <input type="month" id="mes" class="form-control">
+            </div>
+
+            <button class="btn btn-primary" onclick="buscarCalendarioServicios()">Buscar</button>
+        </div>
+
+        <div class="results-section">
+            <div id="calendario-container" class="calendario-container"></div>
+        </div>
+    </div>
+
+    <style>
+        .page-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #333;
+        }
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 13px;
+        }
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+        .btn-primary {
+            background-color: #4a8dc5;
+            color: white;
+        }
+        .results-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .calendario-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .calendario-dia {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 80px;
+            background: white;
+        }
+        .calendario-dia.otro-mes {
+            background: #f9f9f9;
+            color: #999;
+        }
+        .calendario-dia.hoy {
+            background: #e3f2fd;
+            border-color: #4a8dc5;
+        }
+        .dia-numero {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .evento {
+            font-size: 11px;
+            padding: 2px 4px;
+            background: #4a8dc5;
+            color: white;
+            border-radius: 2px;
+            margin-bottom: 2px;
+        }
+    </style>
+
+    <script>
+        async function buscarCalendarioServicios() {
+            const servicio = document.getElementById('servicio').value;
+            const mes = document.getElementById('mes').value;
+
+            const params = new URLSearchParams();
+            if (servicio) params.append('servicio', servicio);
+            if (mes) params.append('mes', mes);
+
+            try {
+                const response = await fetch(`/api/calendario-servicios?${params}`);
+                const eventos = await response.json();
+                
+                generarCalendario(eventos, mes);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function generarCalendario(eventos, mesStr) {
+            const [año, mes] = mesStr.split('-');
+            const fechaActual = new Date(año, mes - 1, 1);
+            const primerDia = new Date(año, mes - 1, 1).getDay();
+            const diasMes = new Date(año, mes, 0).getDate();
+            
+            const container = document.getElementById('calendario-container');
+            container.innerHTML = '';
+            
+            const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            diasSemana.forEach(dia => {
+                const header = document.createElement('div');
+                header.style.fontWeight = '600';
+                header.style.textAlign = 'center';
+                header.textContent = dia;
+                container.appendChild(header);
+            });
+            
+            for (let i = 0; i < primerDia; i++) {
+                const divVacio = document.createElement('div');
+                divVacio.className = 'calendario-dia otro-mes';
+                container.appendChild(divVacio);
+            }
+            
+            for (let dia = 1; dia <= diasMes; dia++) {
+                const divDia = document.createElement('div');
+                divDia.className = 'calendario-dia';
+                
+                const hoy = new Date();
+                if (hoy.getDate() === dia && hoy.getMonth() === fechaActual.getMonth()) {
+                    divDia.classList.add('hoy');
+                }
+                
+                const diaStr = `${año}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+                const eventosDia = eventos.filter(e => e.fecha.startsWith(diaStr));
+                
+                divDia.innerHTML = `<div class="dia-numero">${dia}</div>`;
+                eventosDia.forEach(evento => {
+                    const eventoDiv = document.createElement('div');
+                    eventoDiv.className = 'evento';
+                    eventoDiv.textContent = evento.descripcion;
+                    divDia.appendChild(eventoDiv);
+                });
+                
+                container.appendChild(divDia);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const hoy = new Date();
+            const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+            document.getElementById('mes').value = mesActual;
+            
+            buscarCalendarioServicios();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .dashboard-container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f5f5f5;
+        min-height: calc(100vh - 100px);
+    }
+
+    .dashboard-nav {
+        background: white !important;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 100px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        min-height: 60px;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .nav-tabs {
+        display: flex !important;
+        gap: 10px;
+        align-items: center;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .tab-btn {
+        background: #e8e8e8 !important;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s;
+        color: #333 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .tab-btn:hover {
+        background: #d0d0d0;
+    }
+
+    .tab-btn.active {
+        background: #4a8dc5;
+        color: white;
+    }
+
+    .company-filter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .company-filter label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .company-filter select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    .tab-dropdown-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .tab-dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #4a8dc5;
+        min-width: 280px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 1000;
+        top: 100%;
+        left: 0;
+        border-radius: 0 0 4px 4px;
+        margin-top: 2px;
+    }
+    
+    .tab-dropdown-menu.active {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dropdown-header {
+        background-color: #5a9dd5;
+        color: white;
+        padding: 12px 16px;
+        font-weight: 600;
+        border-bottom: 1px solid #3a7cb5;
+    }
+    
+    .dropdown-item {
+        display: block;
+        color: white;
+        padding: 12px 16px;
+        text-decoration: none;
+        transition: background-color 0.2s;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        font-size: 13px;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #3a7cb5;
+    }
+    
+    .dropdown-item:last-child {
+        border-bottom: none;
+        border-radius: 0 0 4px 4px;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .dashboard-content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+    }
+
+    .chart-section,
+    .actions-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .chart-card h3,
+    .actions-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .chart-subtitle {
+        color: #999;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .chart-legend {
+        margin-top: 15px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+    }
+
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+    }
+
+    .actions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .action-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .action-icon {
+        font-size: 18px;
+    }
+
+    .btn-action {
+        margin-left: auto;
+        background: #4a8dc5;
+        color: white;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-action:hover {
+        background: #3a7cb5;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-nav {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .nav-tabs {
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .company-filter {
+            width: 100%;
+        }
+
+        .dashboard-content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Filtros y Navegación -->
+    <div class="dashboard-nav">
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('visitas')">Visitas</button>
+            <div class="tab-dropdown-wrapper">
+                <button class="tab-btn" onclick="toggleTabDropdown(event)">Reportes ▼</button>
+                <div class="tab-dropdown-menu">
+                    <div class="dropdown-header">Monitor</div>
+                    <a href="/reports/planes-accion" class="dropdown-item">Planes de acción por fecha</a>
+                    <a href="/reports/visitas-formulario" class="dropdown-item">Totales de visitas por formulario</a>
+                    <a href="/reports/vencimientos-equipos" class="dropdown-item">Vencimientos de Equipos - Extintores</a>
+                    <a href="/reports/calendario-clientes" class="dropdown-item">Vista Calendario por clientes</a>
+                    <a href="/reports/calendario-servicios" class="dropdown-item">Vista Calendario por servicios</a>
+                    <a href="/reports/notificaciones-servicios" class="dropdown-item">Detalle de Notificaciones de Servicios</a>
+                </div>
+            </div>
+            <button class="tab-btn" onclick="showTab('operaciones')">Operaciones</button>
+            <button class="tab-btn" onclick="showTab('maestros')">Maestros</button>
+        </div>
+        <div class="company-filter">
+            <label>Empresa:</label>
+            <select id="companySelect">
+                <option value="todos">– TODOS</option>
+                <option value="constructora-abc">Constructora ABC</option>
+                <option value="industrias-xyz">Industrias XYZ</option>
+                <option value="comercial-norte">Comercial Norte</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Tab: Visitas -->
+    <div id="visitas-tab" class="tab-content active">
+        <div class="dashboard-content-grid">
+            <div class="chart-section">
+                <div class="chart-card">
+                    <h3>Visitas</h3>
+                    <p class="chart-subtitle">Últimos 4 meses</p>
+                    <canvas id="visitasChart" width="400" height="200"></canvas>
+                    <div class="chart-legend">
+                        <span class="legend-item">
+                            <span class="legend-color" style="background: #4A90E2;"></span>
+                            Visitas
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="actions-section">
+                <div class="actions-card">
+                    <h3>Acciones</h3>
+                    <div class="actions-list">
+                        <div class="action-item">
+                            <span class="action-icon">📋</span>
+                            <span>Nueva Visita</span>
+                            <button class="btn-action">+</button>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-icon">🔧</span>
+                            <span>Visita de Servicios</span>
+                            <button class="btn-action">+</button>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-icon">📊</span>
+                            <span>Generar Reporte</span>
+                            <button class="btn-action">+</button>
+                        </div>
+                        <div class="action-item">
+                            <span class="action-icon">🏢</span>
+                            <span>Nueva Empresa</span>
+                            <button class="btn-action">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Reportes -->
+    <div id="reportes-tab" class="tab-content">
+        <p>Contenido de Reportes</p>
+    </div>
+
+    <!-- Tab: Operaciones -->
+    <div id="operaciones-tab" class="tab-content">
+        <p>Contenido de Operaciones</p>
+    </div>
+
+    <!-- Tab: Maestros -->
+    <div id="maestros-tab" class="tab-content">
+        <p>Contenido de Maestros</p>
+    </div>
+</div>
+
+<script>
+    let chartInitialized = false;
+    let myChart = null;
+
+    // Función para cambiar tabs
+    function showTab(tabName) {
+        // Ocultar todos los tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remover clase active de todos los botones
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Mostrar el tab seleccionado
+        const selectedTab = document.getElementById(tabName + '-tab');
+        if (selectedTab) {
+            selectedTab.classList.add('active');
+        }
+        
+        // Activar el botón correspondiente
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+        
+        // Cerrar dropdown si está abierto
+        const dropdown = document.querySelector('.tab-dropdown-menu');
+        if (dropdown) {
+            dropdown.classList.remove('active');
+        }
+    }
+    
+    // Función para toggle del dropdown de Reportes
+    function toggleTabDropdown(event) {
+        event.stopPropagation();
+        const dropdown = event.target.nextElementSibling;
+        dropdown.classList.toggle('active');
+    }
+    
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', function(event) {
+        const dropdown = document.querySelector('.tab-dropdown-menu');
+        const wrapper = document.querySelector('.tab-dropdown-wrapper');
+        if (dropdown && !wrapper.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    // Inicializar gráfico
+    function initChart() {
+        if (chartInitialized) return;
+        chartInitialized = true;
+        
+        const canvasElement = document.getElementById('visitasChart');
+        if (!canvasElement) {
+            console.log('Canvas no encontrado');
+            return;
+        }
+        
+        try {
+            const ctx = canvasElement.getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sep', 'Oct', 'Nov', 'Dic'],
+                    datasets: [{
+                        label: 'Visitas',
+                        data: [7, 6, 4, 10],
+                        backgroundColor: '#4A90E2',
+                        borderColor: '#4A90E2',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 12,
+                            ticks: {
+                                stepSize: 2
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        } catch(e) {
+            console.error('Error al inicializar gráfico:', e);
+        }
+    }
+
+    // Esperar a que el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChart);
+    } else {
+        initChart();
+    }
+</script>

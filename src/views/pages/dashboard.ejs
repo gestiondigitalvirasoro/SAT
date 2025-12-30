@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head', { title: 'Dashboard - Potencia Activa' }) %>
+<body>
+    <%- include('../partials/navbar-dashboard') %>
+    
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="welcome-section">
+                <h1>¡Bienvenido a POTENCIA ACTIVA!</h1>
+                <p>Sistema de Alerta Temprana - Panel de Control</p>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">
+                    <span>👤</span>
+                </div>
+                <div class="user-details">
+                    <h3><%= user ? user.name : 'Usuario Admin' %></h3>
+                    <p>Técnico en SHyT</p>
+                </div>
+            </div>
+        </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>15</h3>
+                <p>Reportes Pendientes</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-content">
+                <h3>42</h3>
+                <p>Inspecciones Completadas</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-content">
+                <h3>3</h3>
+                <p>Alertas Activas</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-content">
+                <h3>8</h3>
+                <p>Empresas Asignadas</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="main-actions">
+            <h2>Acciones Rápidas</h2>
+            <div class="action-cards">
+                <div class="action-card">
+                    <div class="action-icon">📝</div>
+                    <h3>Nuevo Reporte</h3>
+                    <p>Crear un nuevo informe de inspección</p>
+                    <button class="btn btn-primary">Crear Reporte</button>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">🔍</div>
+                    <h3>Relevamiento de Riesgos</h3>
+                    <p>Realizar evaluación general de riesgos</p>
+                    <button class="btn btn-primary">Iniciar Relevamiento</button>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">🧯</div>
+                    <h3>Control de Extintores</h3>
+                    <p>Registrar estado de extintores</p>
+                    <button class="btn btn-primary">Controlar Extintores</button>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">📅</div>
+                    <h3>Planificar Visitas</h3>
+                    <p>Programar recorridas y controles</p>
+                    <button class="btn btn-primary">Planificar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2>Actividad Reciente</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">✅</div>
+                    <div class="activity-details">
+                        <h4>Reporte completado - Empresa ABC S.A.</h4>
+                        <p>Hace 2 horas</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">⚠️</div>
+                    <div class="activity-details">
+                        <h4>Alerta generada - Extintor vencido</h4>
+                        <p>Hace 4 horas</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📝</div>
+                    <div class="activity-details">
+                        <h4>Nuevo cliente asignado - Constructora XYZ</h4>
+                        <p>Ayer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <%- include('../partials/footer') %>
+</body>
+</html>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

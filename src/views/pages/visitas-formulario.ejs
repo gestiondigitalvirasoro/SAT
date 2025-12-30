@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head', { title: 'Totales de Visitas por Formulario - Potencia Activa' }) %>
+<body>
+    <%- include('../partials/navbar-dashboard') %>
+    <%- include('../partials/dashboard-nav-tabs') %>
+    
+    <div class="page-container" style="margin-top: 20px;">
+        <div class="page-header">
+            <h1>Totales de visitas por formulario</h1>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-group">
+                <label for="empresa">Empresa</label>
+                <select id="empresa" class="form-control">
+                    <option value="">-- TODOS</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="fecha-desde">Desde</label>
+                <input type="date" id="fecha-desde" class="form-control">
+            </div>
+
+            <div class="filter-group">
+                <label for="fecha-hasta">Hasta</label>
+                <input type="date" id="fecha-hasta" class="form-control">
+            </div>
+
+            <button class="btn btn-primary" onclick="buscarVisitas()">Buscar</button>
+        </div>
+
+        <div class="results-section">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Formulario</th>
+                        <th>Total de Visitas</th>
+                        <th>Promedio por mes</th>
+                        <th>Última visita</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-visitas">
+                    <tr>
+                        <td colspan="4" class="text-center">Cargando datos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <style>
+        .page-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-header {
+            margin-bottom: 30px;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            color: #333;
+            margin: 0;
+        }
+        .filters-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 13px;
+        }
+        .form-control {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+        .btn-primary {
+            background-color: #4a8dc5;
+            color: white;
+        }
+        .results-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table thead th {
+            background-color: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+        .table tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .text-center {
+            text-align: center;
+            color: #999;
+        }
+    </style>
+
+    <script>
+        async function buscarVisitas() {
+            const empresa = document.getElementById('empresa').value;
+            const fechaDesde = document.getElementById('fecha-desde').value;
+            const fechaHasta = document.getElementById('fecha-hasta').value;
+
+            const params = new URLSearchParams();
+            if (empresa) params.append('empresa_id', empresa);
+            if (fechaDesde) params.append('fecha_desde', fechaDesde);
+            if (fechaHasta) params.append('fecha_hasta', fechaHasta);
+
+            try {
+                const response = await fetch(`/api/visitas-formulario?${params}`);
+                const datos = await response.json();
+                
+                const tbody = document.getElementById('tabla-visitas');
+                tbody.innerHTML = '';
+
+                if (datos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay datos</td></tr>';
+                    return;
+                }
+
+                datos.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.formulario}</td>
+                        <td>${item.total}</td>
+                        <td>${item.promedio}</td>
+                        <td>${item.ultima_visita ? new Date(item.ultima_visita).toLocaleDateString('es-AR') : '-'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const empresasResponse = await fetch('/api/empresas');
+            const empresas = await empresasResponse.json();
+            const select = document.getElementById('empresa');
+            empresas.forEach(e => {
+                const option = document.createElement('option');
+                option.value = e.id;
+                option.text = e.nombre;
+                select.appendChild(option);
+            });
+            buscarVisitas();
+        });
+    </script>
+</body>
+</html>

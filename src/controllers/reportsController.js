@@ -108,9 +108,26 @@ exports.getVencimientosEquipos = async (req, res, next) => {
 
 exports.viewVencimientosEquipos = async (req, res, next) => {
   try {
-    const { data: empresas } = await getSupabase().from('empresas').select('*');
-    res.render('pages/vencimientos-equipos', { empresas: empresas || [], user: req.session.user });
+    let empresas = [];
+    
+    try {
+      const supabaseClient = getSupabase();
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.from('empresas').select('*');
+        if (!error && data) {
+          empresas = data;
+        }
+      }
+    } catch (dbError) {
+      console.log('Database error (using demo mode):', dbError.message);
+    }
+    
+    res.render('pages/vencimientos-equipos', { 
+      empresas: empresas || [], 
+      user: req.session.user 
+    });
   } catch (error) {
+    console.error('Error rendering vencimientos-equipos:', error);
     res.status(500).render('pages/error', { error: error.message });
   }
 };
@@ -139,9 +156,26 @@ exports.getCalendarioClientes = async (req, res, next) => {
 
 exports.viewCalendarioClientes = async (req, res, next) => {
   try {
-    const { data: empresas } = await getSupabase().from('empresas').select('*');
-    res.render('pages/calendario-clientes', { empresas: empresas || [], user: req.session.user });
+    let empresas = [];
+    
+    try {
+      const supabaseClient = getSupabase();
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.from('empresas').select('*');
+        if (!error && data) {
+          empresas = data;
+        }
+      }
+    } catch (dbError) {
+      console.log('Database error (using demo mode):', dbError.message);
+    }
+    
+    res.render('pages/calendario-clientes', { 
+      empresas: empresas || [], 
+      user: req.session.user 
+    });
   } catch (error) {
+    console.error('Error rendering calendario-clientes:', error);
     res.status(500).render('pages/error', { error: error.message });
   }
 };

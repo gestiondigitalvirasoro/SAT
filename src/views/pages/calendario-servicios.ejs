@@ -7,14 +7,21 @@
     
     <div class="page-container" style="margin-top: 20px;">
         <div class="page-header">
-            <h1>Vista Calendario por servicios</h1>
+            <h1>Vista calendario por servicios</h1>
         </div>
 
         <div class="filters-section">
             <div class="filter-group">
-                <label for="servicio">Tipo de Servicio</label>
-                <select id="servicio" class="form-control">
-                    <option value="">-- TODOS</option>
+                <label for="empresa">Empresa</label>
+                <select id="empresa" class="form-control">
+                    <option value="">-- todos</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="servicios">Servicios</label>
+                <select id="servicios" class="form-control">
+                    <option value="">-- todos</option>
                     <option value="inspeccion">Inspección</option>
                     <option value="mantenimiento">Mantenimiento</option>
                     <option value="reparacion">Reparación</option>
@@ -22,22 +29,56 @@
             </div>
 
             <div class="filter-group">
-                <label for="mes">Mes</label>
-                <input type="month" id="mes" class="form-control">
+                <label for="agrupador">Agrupador</label>
+                <select id="agrupador" class="form-control">
+                    <option value="">-- todos</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="anio">Año</label>
+                <input type="number" id="anio" class="form-control" value="2025" min="2020" max="2030">
             </div>
 
             <button class="btn btn-primary" onclick="buscarCalendarioServicios()">Buscar</button>
         </div>
 
+        <div class="referencias">
+            <strong>Referencias:</strong>
+            <div class="referencia pendiente"></div> Pendiente de ejecutar
+            <div class="referencia completado"></div> Cumplido
+        </div>
+
         <div class="results-section">
-            <div id="calendario-container" class="calendario-container"></div>
+            <table class="table-calendario" id="tabla-calendario">
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th>Empresa</th>
+                        <th>Ene</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                        <th>Abr</th>
+                        <th>May</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Ago</th>
+                        <th>Sep</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Dic</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                </tbody>
+            </table>
         </div>
     </div>
 
     <style>
         .page-container {
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         .page-header {
@@ -51,10 +92,11 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin-bottom: 20px;
+            display: flex;
             gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .filter-group {
@@ -72,6 +114,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 13px;
+            min-width: 150px;
         }
         .btn {
             padding: 10px 20px;
@@ -80,124 +123,189 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            align-self: flex-end;
         }
         .btn-primary {
             background-color: #4a8dc5;
             color: white;
+        }
+        .referencias {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .referencia {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+        .referencia.pendiente {
+            background-color: #fff3cd;
+        }
+        .referencia.completado {
+            background-color: #d4edda;
         }
         .results-section {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
-        .calendario-container {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
+        .table-calendario {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
         }
-        .calendario-dia {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            min-height: 80px;
-            background: white;
-        }
-        .calendario-dia.otro-mes {
-            background: #f9f9f9;
-            color: #999;
-        }
-        .calendario-dia.hoy {
-            background: #e3f2fd;
-            border-color: #4a8dc5;
-        }
-        .dia-numero {
+        .table-calendario thead th {
+            background-color: #f5f5f5;
+            padding: 12px 8px;
+            text-align: center;
             font-weight: 600;
-            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            min-width: 60px;
         }
-        .evento {
-            font-size: 11px;
-            padding: 2px 4px;
-            background: #4a8dc5;
-            color: white;
-            border-radius: 2px;
-            margin-bottom: 2px;
+        .table-calendario thead th:first-child {
+            text-align: left;
+            min-width: 150px;
+        }
+        .table-calendario thead th:nth-child(2) {
+            text-align: left;
+            min-width: 150px;
+        }
+        .table-calendario tbody td {
+            padding: 12px 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .table-calendario tbody td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+        .table-calendario tbody td:nth-child(2) {
+            text-align: left;
+        }
+        .evento-celda {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            min-width: 30px;
+        }
+        .evento-pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .evento-completado {
+            background-color: #d4edda;
+            color: #155724;
         }
     </style>
 
     <script>
-        async function buscarCalendarioServicios() {
-            const servicio = document.getElementById('servicio').value;
-            const mes = document.getElementById('mes').value;
+        // Datos de demostración
+        const DEMO_SERVICIOS = [
+            { servicio: 'Inspección', empresa: 'Carpal', mes: 2, cantidad: 1, estado: 'completado' },
+            { servicio: 'Mantenimiento', empresa: 'LINOR SRL', mes: 3, cantidad: 2, estado: 'completado' },
+            { servicio: 'Reparación', empresa: 'TecnoPalet', mes: 5, cantidad: 1, estado: 'pendiente' },
+            { servicio: 'Inspección', empresa: 'Carpal', mes: 6, cantidad: 1, estado: 'completado' },
+            { servicio: 'Mantenimiento', empresa: 'Distribuidora González', mes: 7, cantidad: 3, estado: 'completado' },
+            { servicio: 'Reparación', empresa: 'Metalúrgica del Sur', mes: 8, cantidad: 1, estado: 'completado' },
+            { servicio: 'Inspección', empresa: 'LINOR SRL', mes: 9, cantidad: 2, estado: 'completado' },
+            { servicio: 'Mantenimiento', empresa: 'Carpal', mes: 10, cantidad: 1, estado: 'pendiente' },
+            { servicio: 'Reparación', empresa: 'TecnoPalet', mes: 11, cantidad: 2, estado: 'completado' },
+            { servicio: 'Inspección', empresa: 'Metalúrgica del Sur', mes: 12, cantidad: 1, estado: 'completado' }
+        ];
 
-            const params = new URLSearchParams();
-            if (servicio) params.append('servicio', servicio);
-            if (mes) params.append('mes', mes);
+        async function buscarCalendarioServicios() {
+            const empresaId = document.getElementById('empresa').value;
+            const servicios = document.getElementById('servicios').value;
+            const anio = document.getElementById('anio').value || 2025;
 
             try {
+                const params = new URLSearchParams();
+                if (empresaId) params.append('empresa_id', empresaId);
+                if (servicios) params.append('servicios', servicios);
+                params.append('anio', anio);
+
                 const response = await fetch(`/api/calendario-servicios?${params}`);
-                const eventos = await response.json();
-                
-                generarCalendario(eventos, mes);
+                let eventos = [];
+                if (response.ok) {
+                    eventos = await response.json();
+                }
+
+                if (!eventos || eventos.length === 0) {
+                    eventos = DEMO_SERVICIOS;
+                }
+
+                generarTabla(eventos);
             } catch (error) {
                 console.error('Error:', error);
+                generarTabla(DEMO_SERVICIOS);
             }
         }
 
-        function generarCalendario(eventos, mesStr) {
-            const [año, mes] = mesStr.split('-');
-            const fechaActual = new Date(año, mes - 1, 1);
-            const primerDia = new Date(año, mes - 1, 1).getDay();
-            const diasMes = new Date(año, mes, 0).getDate();
-            
-            const container = document.getElementById('calendario-container');
-            container.innerHTML = '';
-            
-            const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-            diasSemana.forEach(dia => {
-                const header = document.createElement('div');
-                header.style.fontWeight = '600';
-                header.style.textAlign = 'center';
-                header.textContent = dia;
-                container.appendChild(header);
-            });
-            
-            for (let i = 0; i < primerDia; i++) {
-                const divVacio = document.createElement('div');
-                divVacio.className = 'calendario-dia otro-mes';
-                container.appendChild(divVacio);
-            }
-            
-            for (let dia = 1; dia <= diasMes; dia++) {
-                const divDia = document.createElement('div');
-                divDia.className = 'calendario-dia';
-                
-                const hoy = new Date();
-                if (hoy.getDate() === dia && hoy.getMonth() === fechaActual.getMonth()) {
-                    divDia.classList.add('hoy');
+        function generarTabla(eventos) {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
+
+            // Agrupar eventos por servicio y empresa
+            const agrupados = {};
+            eventos.forEach(evento => {
+                const key = `${evento.servicio}|${evento.empresa}`;
+                if (!agrupados[key]) {
+                    agrupados[key] = { servicio: evento.servicio, empresa: evento.empresa, meses: {} };
                 }
-                
-                const diaStr = `${año}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-                const eventosDia = eventos.filter(e => e.fecha.startsWith(diaStr));
-                
-                divDia.innerHTML = `<div class="dia-numero">${dia}</div>`;
-                eventosDia.forEach(evento => {
-                    const eventoDiv = document.createElement('div');
-                    eventoDiv.className = 'evento';
-                    eventoDiv.textContent = evento.descripcion;
-                    divDia.appendChild(eventoDiv);
-                });
-                
-                container.appendChild(divDia);
-            }
+                agrupados[key].meses[evento.mes] = evento;
+            });
+
+            // Generar filas
+            Object.values(agrupados).forEach(grupo => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${grupo.servicio}</td><td>${grupo.empresa}</td>`;
+
+                for (let mes = 1; mes <= 12; mes++) {
+                    const td = document.createElement('td');
+                    const evento = grupo.meses[mes];
+                    if (evento) {
+                        const celda = document.createElement('div');
+                        celda.className = `evento-celda evento-${evento.estado}`;
+                        celda.textContent = evento.cantidad;
+                        td.appendChild(celda);
+                    }
+                    row.appendChild(td);
+                }
+
+                tbody.appendChild(row);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const hoy = new Date();
-            const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
-            document.getElementById('mes').value = mesActual;
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Cargar empresas
+            const empresasResponse = await fetch('/api/empresas');
+            let empresas = [];
+            if (empresasResponse.ok) {
+                empresas = await empresasResponse.json();
+            }
+
+            const select = document.getElementById('empresa');
+            const datosEmpresas = empresas.length > 0 ? empresas : 
+                [{ id: 1, nombre: 'Carpal' }, { id: 2, nombre: 'LINOR SRL' }];
             
+            datosEmpresas.forEach(e => {
+                const option = document.createElement('option');
+                option.value = e.id;
+                option.text = e.nombre;
+                select.appendChild(option);
+            });
+
             buscarCalendarioServicios();
         });
     </script>

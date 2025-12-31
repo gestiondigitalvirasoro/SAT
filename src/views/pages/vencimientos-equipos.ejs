@@ -15,18 +15,10 @@
                 <label style="display: block; margin-bottom: 8px; font-weight: 500;">Empresa</label>
                 <select id="empresa" class="form-control" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
                     <option value="">-- TODOS</option>
-                    <% 
-                    // Usar empresas de Supabase si están disponibles, si no usar datos de demo
-                    const empresasDemo = ['LINOR SRL', 'TecnoPalet', 'Distribuidora González', 'Metalúrgica del Sur'];
-                    const empresasParaMostrar = (empresas && empresas.length > 0) ? empresas : empresasDemo;
-                    %>
-                    <% empresasParaMostrar.forEach(emp => { %>
-                        <% if (typeof emp === 'object') { %>
-                            <option value="<%= emp.nombre %>"><%= emp.nombre %></option>
-                        <% } else { %>
-                            <option value="<%= emp %>"><%= emp %></option>
-                        <% } %>
-                    <% }); %>
+                    <option value="LINOR SRL">LINOR SRL</option>
+                    <option value="TecnoPalet">TecnoPalet</option>
+                    <option value="Distribuidora González">Distribuidora González</option>
+                    <option value="Metalúrgica del Sur">Metalúrgica del Sur</option>
                 </select>
             </div>
 

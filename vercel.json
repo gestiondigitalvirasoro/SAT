@@ -1,16 +1,7 @@
 {
   "version": 2,
-  "functions": {
-    "src/index.js": {
-      "runtime": "@vercel/node@3"
-    }
-  },
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/src/index.js"
-    }
-  ],
+  "buildCommand": "npm install",
+  "outputDirectory": ".",
   "env": {
     "NODE_ENV": "production"
   }

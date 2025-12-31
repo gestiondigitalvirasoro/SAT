@@ -74,7 +74,7 @@
         <!-- Tabla de Detalles -->
         <div class="details-section" style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 id="detailsTitle">Vencimientos de equipos: May 2025</h3>
+                <h3 id="detailsTitle">Selecciona un mes para ver los vencimientos</h3>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn btn-sm btn-outline-primary" onclick="printTable()" style="padding: 8px 12px; border: 1px solid #1976d2; color: #1976d2; background: white; border-radius: 4px; cursor: pointer;" title="Imprimir">🖨️ Imprimir</button>
                     <button class="btn btn-sm btn-outline-primary" onclick="downloadCSV()" style="padding: 8px 12px; border: 1px solid #1976d2; color: #1976d2; background: white; border-radius: 4px; cursor: pointer;" title="Descargar">📥 Descargar</button>
@@ -99,7 +99,7 @@
                         </tr>
                     </thead>
                     <tbody id="detailsTableBody">
-                        <tr><td colspan="11" style="padding: 20px; text-align: center; color: #999;">Selecciona un mes para ver detalles</td></tr>
+                        <tr><td colspan="11" style="padding: 20px; text-align: center; color: #999;">Haz click en un número de mes para ver los equipos con vencimiento</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -236,7 +236,7 @@
         // Inicializar cuando carga la página
         document.addEventListener('DOMContentLoaded', () => {
             updateCalendar();
-            viewMonth('2025-05'); // Mostrar mayo por defecto
+            // NO mostrar datos inicialmente - esperar a que haga click en un mes
             
             // Agregar event listener al filtro de empresa
             document.getElementById('empresa').addEventListener('change', () => {

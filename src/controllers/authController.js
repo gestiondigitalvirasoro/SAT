@@ -7,21 +7,21 @@ const DEMO_USERS = [
     id: 1,
     name: 'Administrador',
     email: 'admin@potenciaactiva.com',
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // admin123
+    password: '$2a$10$SlWeS5i4CZW8T.9eEMJVauxDKp5oLvvNGQRuKGBqXSqNV00YqPmse', // admin123
     role: 'admin'
   },
   {
     id: 2,
     name: 'Usuario Prueba',
     email: 'usuario@potenciaactiva.com', 
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // user123
+    password: '$2a$10$SlWeS5i4CZW8T.9eEMJVauxDKp5oLvvNGQRuKGBqXSqNV00YqPmse', // admin123
     role: 'user'
   },
   {
     id: 3,
     name: 'Demo User',
     email: 'demo@demo.com',
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // demo123
+    password: '$2a$10$SlWeS5i4CZW8T.9eEMJVauxDKp5oLvvNGQRuKGBqXSqNV00YqPmse', // admin123
     role: 'user'
   }
 ];

@@ -2,7 +2,8 @@
 <html lang="es">
 <%- include('../partials/head', { title: 'Vencimientos de Equipos - Potencia Activa' }) %>
 <body>
-    <%- include('../partials/navbar-dashboard') %>    <%- include('../partials/menu-reportes') %>    
+    <%- include('../partials/navbar-dashboard') %>
+    
     <div class="page-container" style="margin-top: 100px; padding: 20px;">
         <div class="page-header">
             <h1>Vencimientos de Equipos Extintores</h1>
@@ -10,6 +11,17 @@
 
         <!-- Filtros y Controles -->
         <div class="controls-section" style="margin-bottom: 30px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Empresa</label>
+                <select id="empresa" class="form-control" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="">-- TODOS</option>
+                    <option value="LINOR SRL">LINOR SRL</option>
+                    <option value="TecnoPalet">TecnoPalet</option>
+                    <option value="Distribuidora González">Distribuidora González</option>
+                    <option value="Metalúrgica del Sur">Metalúrgica del Sur</option>
+                </select>
+            </div>
+
             <div style="display: flex; gap: 10px; align-items: flex-end;">
                 <button class="btn btn-sm btn-outline-secondary" onclick="previousYear()" style="padding: 8px 12px; border: 1px solid #999;">«</button>
                 <button class="btn btn-sm btn-primary" onclick="goToToday()" style="padding: 8px 12px; background-color: #1976d2; color: white; border: none; border-radius: 4px;">Hoy</button>
@@ -224,41 +236,21 @@
         // Inicializar cuando carga la página
         document.addEventListener('DOMContentLoaded', () => {
             updateCalendar();
-            
-            // Crear dropdown local de empresa si no existe
-            if (!document.getElementById('empresa')) {
-                const container = document.createElement('div');
-                container.style.display = 'none';
-                container.innerHTML = '<select id="empresa" class="form-control" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;"><option value="">-- TODOS</option><option value="LINOR SRL">LINOR SRL</option><option value="TecnoPalet">TecnoPalet</option><option value="Distribuidora González">Distribuidora González</option><option value="Metalúrgica del Sur">Metalúrgica del Sur</option></select>';
-                document.body.appendChild(container);
-            }
-            
-            // Sincronizar con el dropdown del menú superior si existe
-            const menuEmpresa = document.getElementById('menuEmpresa');
-            const pageEmpresa = document.getElementById('empresa');
-            
-            if (menuEmpresa && pageEmpresa) {
-                menuEmpresa.addEventListener('change', () => {
-                    pageEmpresa.value = menuEmpresa.value;
-                    pageEmpresa.dispatchEvent(new Event('change'));
-                });
-            }
+            // NO mostrar datos inicialmente - esperar a que haga click en un mes
             
             // Agregar event listener al filtro de empresa
-            if (pageEmpresa) {
-                pageEmpresa.addEventListener('change', () => {
-                    // Obtener el mes actual que se está mostrando del título
-                    const title = document.getElementById('detailsTitle').textContent;
-                    const monthMatch = title.match(/(\w+)\s(\d{4})/);
-                    if (monthMatch) {
-                        const monthNames = {'Enero': '01', 'Febrero': '02', 'Marzo': '03', 'Abril': '04', 'Mayo': '05', 'Junio': '06', 'Julio': '07', 'Agosto': '08', 'Septiembre': '09', 'Octubre': '10', 'Noviembre': '11', 'Diciembre': '12'};
-                        const monthNumber = monthNames[monthMatch[1]];
-                        const year = monthMatch[2];
-                        const monthKey = `${year}-${monthNumber}`;
-                        viewMonth(monthKey);
-                    }
-                });
-            }
+            document.getElementById('empresa').addEventListener('change', () => {
+                // Obtener el mes actual que se está mostrando del título
+                const title = document.getElementById('detailsTitle').textContent;
+                const monthMatch = title.match(/(\w+)\s(\d{4})/);
+                if (monthMatch) {
+                    const monthNames = {'Enero': '01', 'Febrero': '02', 'Marzo': '03', 'Abril': '04', 'Mayo': '05', 'Junio': '06', 'Julio': '07', 'Agosto': '08', 'Septiembre': '09', 'Octubre': '10', 'Noviembre': '11', 'Diciembre': '12'};
+                    const monthNumber = monthNames[monthMatch[1]];
+                    const year = monthMatch[2];
+                    const monthKey = `${year}-${monthNumber}`;
+                    viewMonth(monthKey);
+                }
+            });
         });
     </script>
 </body>

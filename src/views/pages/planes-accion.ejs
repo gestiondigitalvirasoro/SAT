@@ -196,30 +196,96 @@
             text-align: center;
             color: #999;
         }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pendiente {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .badge-en-proceso {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .badge-completado {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            background-color: #f5f5f5;
+            color: #333;
+            transition: background-color 0.2s;
+        }
+
+        .btn-sm:hover {
+            background-color: #e8e8e8;
+        }
     </style>
 
     <script>
+        // Datos de demostración
+        const DEMO_DATA = [
+            { id: 1, fecha: '2025-12-15', empresa: 'Carpal', locacion: 'Almacén Principal', descripcion: 'Implementar sistema de seguridad', estado: 'en-proceso' },
+            { id: 2, fecha: '2025-12-20', empresa: 'LINOR SRL', locacion: 'Planta A', descripcion: 'Mantenimiento preventivo de maquinaria', estado: 'pendiente' },
+            { id: 3, fecha: '2025-12-10', empresa: 'TecnoPalet', locacion: 'Zona de carga', descripcion: 'Capacitación de personal de seguridad', estado: 'completado' },
+            { id: 4, fecha: '2025-12-25', empresa: 'Distribuidora González', locacion: 'Oficinas', descripcion: 'Auditoría de procesos', estado: 'pendiente' },
+            { id: 5, fecha: '2025-12-05', empresa: 'Metalúrgica del Sur', locacion: 'Taller', descripcion: 'Revisión de equipos de protección', estado: 'completado' },
+            { id: 6, fecha: '2025-11-30', empresa: 'Carpal', locacion: 'Oficina Administrativa', descripcion: 'Actualizar procedimientos', estado: 'en-proceso' },
+            { id: 7, fecha: '2025-12-18', empresa: 'LINOR SRL', locacion: 'Depósito', descripcion: 'Inspección de instalaciones eléctricas', estado: 'pendiente' },
+            { id: 8, fecha: '2025-12-08', empresa: 'TecnoPalet', locacion: 'Planta B', descripcion: 'Implementar mejoras sugeridas', estado: 'en-proceso' }
+        ];
+
+        const EMPRESAS_DEMO = [
+            { id: 1, nombre: 'Carpal' },
+            { id: 2, nombre: 'LINOR SRL' },
+            { id: 3, nombre: 'TecnoPalet' },
+            { id: 4, nombre: 'Distribuidora González' },
+            { id: 5, nombre: 'Metalúrgica del Sur' }
+        ];
+
+        const LOCACIONES_DEMO = [
+            { id: 1, nombre: 'Almacén Principal' },
+            { id: 2, nombre: 'Planta A' },
+            { id: 3, nombre: 'Zona de carga' },
+            { id: 4, nombre: 'Oficinas' },
+            { id: 5, nombre: 'Taller' },
+            { id: 6, nombre: 'Oficina Administrativa' },
+            { id: 7, nombre: 'Depósito' },
+            { id: 8, nombre: 'Planta B' }
+        ];
+
         // Cargar datos iniciales
         async function cargarDatos() {
             try {
-                // Cargar empresas
-                const empresasResponse = await fetch('/api/empresas');
-                const empresas = await empresasResponse.json();
-                
+                // Cargar empresas (demo)
                 const empresaSelect = document.getElementById('empresa');
-                empresas.forEach(empresa => {
+                EMPRESAS_DEMO.forEach(empresa => {
                     const option = document.createElement('option');
                     option.value = empresa.id;
                     option.textContent = empresa.nombre;
                     empresaSelect.appendChild(option);
                 });
 
-                // Cargar locaciones
-                const locacionesResponse = await fetch('/api/locaciones');
-                const locaciones = await locacionesResponse.json();
-                
+                // Cargar locaciones (demo)
                 const locacionSelect = document.getElementById('locacion');
-                locaciones.forEach(locacion => {
+                LOCACIONES_DEMO.forEach(locacion => {
                     const option = document.createElement('option');
                     option.value = locacion.id;
                     option.textContent = locacion.nombre;
@@ -235,38 +301,61 @@
 
         async function buscarPlanesAccion() {
             try {
-                const empresa = document.getElementById('empresa').value;
-                const locacion = document.getElementById('locacion').value;
+                const empresaId = document.getElementById('empresa').value;
+                const locacionId = document.getElementById('locacion').value;
                 const fechaDesde = document.getElementById('fecha-desde').value;
                 const fechaHasta = document.getElementById('fecha-hasta').value;
                 const estado = document.getElementById('estado').value;
 
-                const params = new URLSearchParams();
-                if (empresa) params.append('empresa_id', empresa);
-                if (locacion) params.append('locacion_id', locacion);
-                if (fechaDesde) params.append('fecha_desde', fechaDesde);
-                if (fechaHasta) params.append('fecha_hasta', fechaHasta);
-                if (estado) params.append('estado', estado);
+                // Filtrar datos de demostración
+                let datos = [...DEMO_DATA];
 
-                const response = await fetch(`/api/planes-accion?${params}`);
-                const planesAccion = await response.json();
+                if (empresaId) {
+                    const empresa = EMPRESAS_DEMO.find(e => e.id == empresaId);
+                    if (empresa) {
+                        datos = datos.filter(p => p.empresa === empresa.nombre);
+                    }
+                }
+
+                if (locacionId) {
+                    const locacion = LOCACIONES_DEMO.find(l => l.id == locacionId);
+                    if (locacion) {
+                        datos = datos.filter(p => p.locacion === locacion.nombre);
+                    }
+                }
+
+                if (fechaDesde) {
+                    datos = datos.filter(p => new Date(p.fecha) >= new Date(fechaDesde));
+                }
+
+                if (fechaHasta) {
+                    datos = datos.filter(p => new Date(p.fecha) <= new Date(fechaHasta));
+                }
+
+                if (estado) {
+                    datos = datos.filter(p => p.estado === estado);
+                }
 
                 const tbody = document.querySelector('.table tbody');
                 tbody.innerHTML = '';
 
-                if (planesAccion.length === 0) {
+                if (datos.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay resultados</td></tr>';
                     return;
                 }
 
-                planesAccion.forEach(plan => {
+                datos.forEach(plan => {
                     const row = document.createElement('tr');
+                    const badgeClass = `badge-${plan.estado}`;
+                    const estadoLabel = plan.estado === 'pendiente' ? 'Pendiente' : 
+                                       plan.estado === 'en-proceso' ? 'En Proceso' : 'Completado';
+                    
                     row.innerHTML = `
                         <td>${new Date(plan.fecha).toLocaleDateString('es-AR')}</td>
-                        <td>${plan.empresa?.nombre || '-'}</td>
-                        <td>${plan.locacion?.nombre || '-'}</td>
+                        <td>${plan.empresa}</td>
+                        <td>${plan.locacion}</td>
                         <td>${plan.descripcion}</td>
-                        <td><span class="badge badge-${plan.estado}">${plan.estado}</span></td>
+                        <td><span class="badge ${badgeClass}">${estadoLabel}</span></td>
                         <td>
                             <button class="btn-sm" onclick="verDetalle(${plan.id})">Ver</button>
                         </td>
@@ -279,7 +368,10 @@
         }
 
         function verDetalle(id) {
-            alert('Ver detalle del plan: ' + id);
+            const plan = DEMO_DATA.find(p => p.id === id);
+            if (plan) {
+                alert(`Plan #${id}\nEmpresa: ${plan.empresa}\nLocación: ${plan.locacion}\nDescripción: ${plan.descripcion}\nEstado: ${plan.estado}\nFecha: ${new Date(plan.fecha).toLocaleDateString('es-AR')}`);
+            }
         }
 
         // Cargar datos cuando carga la página

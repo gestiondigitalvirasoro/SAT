@@ -28,10 +28,6 @@ router.get('/reports/calendario-servicios', requireAuth, reportsController.viewC
 router.get('/reports/notificaciones-servicios', requireAuth, reportsController.viewNotificacionesServicios);
 
 // Rutas públicas de reportes (sin autenticación)
-router.get('/public/dashboard', (req, res) => {
-  res.render('dashboard', { user: { nombre: 'Usuario', email: 'usuario@example.com' } });
-});
-
 router.get('/public/reports/planes-accion', planesAccionController.viewPlanesAccion);
 router.get('/public/reports/visitas-formulario', reportsController.viewVisitasFormulario);
 router.get('/public/reports/vencimientos-equipos', reportsController.viewVencimientosEquipos);

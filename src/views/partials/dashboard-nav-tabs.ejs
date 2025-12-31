@@ -135,16 +135,49 @@
     </div>
     <div class="company-filter">
         <label>Empresa:</label>
-        <select id="companySelect">
-            <option value="todos">– TODOS</option>
-            <option value="constructora-abc">Constructora ABC</option>
-            <option value="industrias-xyz">Industrias XYZ</option>
-            <option value="comercial-norte">Comercial Norte</option>
+        <select id="companySelect" onchange="cambiarEmpresa()">
+            <option value="">– TODOS</option>
         </select>
     </div>
 </div>
 
 <script>
+    // Cargar empresas dinámicamente
+    async function cargarEmpresas() {
+        try {
+            const response = await fetch('/api/empresas');
+            if (response.ok) {
+                const empresas = await response.json();
+                const select = document.getElementById('companySelect');
+                
+                empresas.forEach(emp => {
+                    const option = document.createElement('option');
+                    option.value = emp.id || emp.nombre;
+                    option.textContent = emp.nombre;
+                    select.appendChild(option);
+                });
+
+                // Restaurar valor guardado si existe
+                const savedCompany = localStorage.getItem('selectedCompany');
+                if (savedCompany) {
+                    select.value = savedCompany;
+                }
+            }
+        } catch (error) {
+            console.log('Error cargando empresas:', error);
+        }
+    }
+
+    // Cambiar empresa y recargar datos
+    function cambiarEmpresa() {
+        const select = document.getElementById('companySelect');
+        const selectedCompany = select.value;
+        localStorage.setItem('selectedCompany', selectedCompany);
+        
+        // Recargar la página o los datos según sea necesario
+        window.location.reload();
+    }
+
     function toggleTabDropdown(event) {
         event.stopPropagation();
         const menu = event.target.nextElementSibling;
@@ -172,4 +205,7 @@
         
         event.target.classList.add('active');
     }
+
+    // Cargar empresas al iniciar
+    document.addEventListener('DOMContentLoaded', cargarEmpresas);
 </script>

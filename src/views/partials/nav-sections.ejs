@@ -1,0 +1,44 @@
+<nav style="background-color: #f5f5f5; padding: 15px 20px; margin-bottom: 20px; border-radius: 4px;">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;">
+        <a href="/" style="padding: 8px 16px; background-color: white; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; cursor: pointer; transition: all 0.3s;">
+            🏠 Home
+        </a>
+        <button onclick="toggleReportesMenu()" style="padding: 8px 16px; background-color: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; color: #333; font-weight: 500;">
+            📊 Reportes ▼
+        </button>
+        <a href="/operaciones" style="padding: 8px 16px; background-color: white; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; cursor: pointer; transition: all 0.3s;">
+            ⚙️ Operaciones
+        </a>
+        <a href="/maestros" style="padding: 8px 16px; background-color: white; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; cursor: pointer; transition: all 0.3s;">
+            📋 Maestros
+        </a>
+    </div>
+
+    <!-- Submenu Reportes -->
+    <div id="reportesMenu" style="display: none; background-color: white; padding: 15px 20px; margin-top: 10px; border-radius: 4px; border: 1px solid #ddd;">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;">
+            <a href="/reports/vencimientos-equipos" style="text-decoration: none; color: #1976d2; cursor: pointer;">📅 Vencimientos de Equipos</a>
+            <a href="/reports/planes-accion" style="text-decoration: none; color: #1976d2; cursor: pointer;">📝 Planes de Acción</a>
+            <a href="/reports/visitas-formulario" style="text-decoration: none; color: #1976d2; cursor: pointer;">✅ Visitas Formulario</a>
+            <a href="/reports/calendario-clientes" style="text-decoration: none; color: #1976d2; cursor: pointer;">📆 Calendario Clientes</a>
+            <a href="/reports/calendario-servicios" style="text-decoration: none; color: #1976d2; cursor: pointer;">📆 Calendario Servicios</a>
+            <a href="/reports/notificaciones-servicios" style="text-decoration: none; color: #1976d2; cursor: pointer;">🔔 Notificaciones</a>
+        </div>
+    </div>
+</nav>
+
+<script>
+function toggleReportesMenu() {
+    const menu = document.getElementById('reportesMenu');
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+// Cerrar el menú si hace click en cualquier otro lado
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('reportesMenu');
+    const btn = event.target.closest('button');
+    if (!btn && menu.style.display === 'block') {
+        menu.style.display = 'none';
+    }
+});
+</script>

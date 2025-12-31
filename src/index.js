@@ -13,7 +13,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { 
-    secure: false, // true en producción con HTTPS
+    secure: process.env.NODE_ENV === 'production', // true en producción
     maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
 }));
@@ -55,7 +55,12 @@ app.use((req, res) => {
 // Error handler
 app.use(require('./lib/errorHandler'));
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Start server only if not in serverless environment (Vercel)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
 });

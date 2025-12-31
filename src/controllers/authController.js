@@ -7,22 +7,25 @@ const DEMO_USERS = [
     id: 1,
     name: 'Administrador',
     email: 'admin@potenciaactiva.com',
-    password: '$2a$10$SlWeS5i4CZW8T.9eEMJVauxDKp5oLvvNGQRuKGBqXSqNV00YqPmse', // admin123
-    role: 'admin'
+    password: 'admin123',
+    role: 'admin',
+    isDemo: true
   },
   {
     id: 2,
     name: 'Usuario Prueba',
     email: 'usuario@potenciaactiva.com', 
-    password: '$2a$10$SlWeS5i4CZW8T.9eEMJVauxDKp5oLvvNGQRuKGBqXSqNV00YqPmse', // admin123
-    role: 'user'
+    password: 'user123',
+    role: 'user',
+    isDemo: true
   },
   {
     id: 3,
     name: 'Demo User',
     email: 'demo@demo.com',
-    password: '$2a$10$SlWeS5i4CZW8T.9eEMJVauxDKp5oLvvNGQRuKGBqXSqNV00YqPmse', // admin123
-    role: 'user'
+    password: 'demo123',
+    role: 'user',
+    isDemo: true
   }
 ];
 
@@ -108,12 +111,20 @@ class AuthController {
       });
 
       // Verificar contraseña
-      const isValidPassword = await bcrypt.compare(password, user.password);
+      let isValidPassword = false;
+      
+      if (user.isDemo) {
+        // En modo demo, comparar texto plano
+        isValidPassword = password === user.password;
+      } else {
+        // En producción con Supabase, usar bcrypt
+        isValidPassword = await bcrypt.compare(password, user.password);
+      }
       
       console.log('🔐 Password validation:', { 
         isValid: isValidPassword,
         providedPassword: '[HIDDEN]',
-        storedHash: user.password ? user.password.substring(0, 10) + '...' : 'NONE'
+        mode: user.isDemo ? 'DEMO' : 'PRODUCTION'
       });
       
       if (!isValidPassword) {

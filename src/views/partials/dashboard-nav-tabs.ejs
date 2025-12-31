@@ -46,24 +46,6 @@
         color: white;
     }
 
-    .company-filter {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .company-filter label {
-        font-weight: 600;
-        color: #333;
-    }
-
-    .company-filter select {
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 13px;
-    }
-
     .tab-dropdown-wrapper {
         position: relative;
         display: inline-block;
@@ -133,51 +115,9 @@
         <button class="tab-btn" onclick="showTab('operaciones')">Operaciones</button>
         <button class="tab-btn" onclick="showTab('maestros')">Maestros</button>
     </div>
-    <div class="company-filter">
-        <label>Empresa:</label>
-        <select id="companySelect" onchange="cambiarEmpresa()">
-            <option value="">– TODOS</option>
-        </select>
-    </div>
 </div>
 
 <script>
-    // Cargar empresas dinámicamente
-    async function cargarEmpresas() {
-        try {
-            const response = await fetch('/api/empresas');
-            if (response.ok) {
-                const empresas = await response.json();
-                const select = document.getElementById('companySelect');
-                
-                empresas.forEach(emp => {
-                    const option = document.createElement('option');
-                    option.value = emp.id || emp.nombre;
-                    option.textContent = emp.nombre;
-                    select.appendChild(option);
-                });
-
-                // Restaurar valor guardado si existe
-                const savedCompany = localStorage.getItem('selectedCompany');
-                if (savedCompany) {
-                    select.value = savedCompany;
-                }
-            }
-        } catch (error) {
-            console.log('Error cargando empresas:', error);
-        }
-    }
-
-    // Cambiar empresa y recargar datos
-    function cambiarEmpresa() {
-        const select = document.getElementById('companySelect');
-        const selectedCompany = select.value;
-        localStorage.setItem('selectedCompany', selectedCompany);
-        
-        // Recargar la página o los datos según sea necesario
-        window.location.reload();
-    }
-
     function toggleTabDropdown(event) {
         event.stopPropagation();
         const menu = event.target.nextElementSibling;
@@ -205,7 +145,4 @@
         
         event.target.classList.add('active');
     }
-
-    // Cargar empresas al iniciar
-    document.addEventListener('DOMContentLoaded', cargarEmpresas);
 </script>

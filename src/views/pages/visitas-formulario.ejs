@@ -7,43 +7,35 @@
     
     <div class="page-container" style="margin-top: 20px;">
         <div class="page-header">
-            <h1>Totales de visitas por formulario</h1>
+            <h1>Totales de Visitas por formulario</h1>
         </div>
 
         <div class="filters-section">
             <div class="filter-group">
-                <label for="empresa">Empresa</label>
-                <select id="empresa" class="form-control">
-                    <option value="">-- TODOS</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="fecha-desde">Desde</label>
-                <input type="date" id="fecha-desde" class="form-control">
-            </div>
-
-            <div class="filter-group">
-                <label for="fecha-hasta">Hasta</label>
-                <input type="date" id="fecha-hasta" class="form-control">
+                <label for="mes">Mes</label>
+                <input type="month" id="mes" class="form-control" value="">
             </div>
 
             <button class="btn btn-primary" onclick="buscarVisitas()">Buscar</button>
         </div>
 
         <div class="results-section">
+            <div class="table-header-icons">
+                <h3>Totales de Visitas por formulario</h3>
+                <div class="icon-group">
+                    <span class="icon">🖨️</span>
+                    <span class="icon">☁️</span>
+                </div>
+            </div>
             <table class="table">
                 <thead>
-                    <tr>
-                        <th>Formulario</th>
-                        <th>Total de Visitas</th>
-                        <th>Promedio por mes</th>
-                        <th>Última visita</th>
+                    <tr id="encabezados">
+                        <th>Empresa</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-visitas">
                     <tr>
-                        <td colspan="4" class="text-center">Cargando datos...</td>
+                        <td colspan="11" class="text-center">Cargando datos...</td>
                     </tr>
                 </tbody>
             </table>
@@ -53,7 +45,7 @@
     <style>
         .page-container {
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         .page-header {
@@ -69,9 +61,9 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
             gap: 15px;
+            align-items: flex-end;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .filter-group {
@@ -89,6 +81,7 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 13px;
+            min-width: 200px;
         }
         .btn {
             padding: 10px 20px;
@@ -97,7 +90,6 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            align-self: flex-end;
         }
         .btn-primary {
             background-color: #4a8dc5;
@@ -109,76 +101,204 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        .table-header-icons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .table-header-icons h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .icon-group {
+            display: flex;
+            gap: 15px;
+            font-size: 20px;
+        }
+        .icon {
+            cursor: pointer;
+        }
         .table {
             width: 100%;
             border-collapse: collapse;
+            overflow-x: auto;
         }
         .table thead th {
-            background-color: #f5f5f5;
+            background-color: #e8e8e8;
             padding: 12px;
-            text-align: left;
-            font-weight: 600;
+            text-align: center;
+            font-weight: 700;
             color: #333;
-            border-bottom: 2px solid #ddd;
+            border: 1px solid #ddd;
+            font-size: 13px;
+        }
+        .table thead th:first-child {
+            text-align: left;
+            background-color: #f5f5f5;
+        }
+        .table tbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+        .table tbody tr:last-child {
+            background-color: #e8e8e8;
+            font-weight: 600;
         }
         .table tbody td {
             padding: 12px;
-            border-bottom: 1px solid #eee;
+            text-align: center;
+            border-right: 1px solid #eee;
+        }
+        .table tbody td:first-child {
+            text-align: left;
+            border-right: 1px solid #ddd;
+            font-weight: 500;
         }
         .text-center {
             text-align: center;
             color: #999;
         }
+        /* Colores para los tipos de formularios */
+        .tipo-GE { background-color: #4ecca3; color: white; padding: 4px 8px; border-radius: 4px; }
+        .tipo-RU { background-color: #7abf4a; color: white; padding: 4px 8px; border-radius: 4px; }
+        .tipo-ER { background-color: #a4c639; color: white; padding: 4px 8px; border-radius: 4px; }
+        .tipo-RO { background-color: #d4c841; color: black; padding: 4px 8px; border-radius: 4px; }
+        .tipo-IL { background-color: #e8d841; color: black; padding: 4px 8px; border-radius: 4px; }
+        .tipo-TI { background-color: #f0c841; color: black; padding: 4px 8px; border-radius: 4px; }
+        .tipo-EX { background-color: #e8a841; color: black; padding: 4px 8px; border-radius: 4px; }
+        .tipo-VL { background-color: #9966cc; color: white; padding: 4px 8px; border-radius: 4px; }
+        .tipo-PP { background-color: #b84472; color: white; padding: 4px 8px; border-radius: 4px; }
+        .tipo-otros { background-color: #999999; color: white; padding: 4px 8px; border-radius: 4px; }
     </style>
 
     <script>
-        async function buscarVisitas() {
-            const empresa = document.getElementById('empresa').value;
-            const fechaDesde = document.getElementById('fecha-desde').value;
-            const fechaHasta = document.getElementById('fecha-hasta').value;
+        // Datos de demostración: por mes y empresa
+        const DEMO_DATA = {
+            '2025-05': [
+                { empresa: 'Carpal', GE: 0, RU: 1, ER: 1, RO: 0, IL: 0, TI: 0, EX: 0, VL: 0, PP: 0, otros: 0 },
+                { empresa: 'Forestal San Matteo', GE: 0, RU: 0, ER: 0, RO: 0, IL: 0, TI: 0, EX: 0, VL: 1, PP: 0, otros: 0 },
+                { empresa: 'HENN Y CIA S.R.L.', GE: 0, RU: 0, ER: 0, RO: 0, IL: 0, TI: 0, EX: 0, VL: 1, PP: 0, otros: 0 },
+                { empresa: 'TESOGRAM SAS', GE: 0, RU: 0, ER: 0, RO: 0, IL: 0, TI: 0, EX: 0, VL: 1, PP: 0, otros: 0 },
+                { empresa: 'Virama', GE: 1, RU: 0, ER: 0, RO: 0, IL: 0, TI: 0, EX: 0, VL: 0, PP: 0, otros: 0 }
+            ],
+            '2025-06': [
+                { empresa: 'Carpal', GE: 1, RU: 0, ER: 0, RO: 1, IL: 0, TI: 0, EX: 0, VL: 0, PP: 0, otros: 0 },
+                { empresa: 'Forestal San Matteo', GE: 0, RU: 0, ER: 0, RO: 0, IL: 0, TI: 0, EX: 0, VL: 0, PP: 0, otros: 1 }
+            ],
+            '2025-07': [
+                { empresa: 'Carpal', GE: 0, RU: 1, ER: 0, RO: 0, IL: 0, TI: 1, EX: 0, VL: 0, PP: 0, otros: 0 },
+                { empresa: 'HENN Y CIA S.R.L.', GE: 0, RU: 0, ER: 0, RO: 0, IL: 1, TI: 0, EX: 0, VL: 0, PP: 0, otros: 0 }
+            ]
+        };
 
-            const params = new URLSearchParams();
-            if (empresa) params.append('empresa_id', empresa);
-            if (fechaDesde) params.append('fecha_desde', fechaDesde);
-            if (fechaHasta) params.append('fecha_hasta', fechaHasta);
+        const TIPOS = ['GE', 'RU', 'ER', 'RO', 'IL', 'TI', 'EX', 'VL', 'PP', 'otros'];
+        const COLORES = {
+            'GE': '#4ecca3', 'RU': '#7abf4a', 'ER': '#a4c639', 'RO': '#d4c841',
+            'IL': '#e8d841', 'TI': '#f0c841', 'EX': '#e8a841', 'VL': '#9966cc',
+            'PP': '#b84472', 'otros': '#999999'
+        };
 
-            try {
-                const response = await fetch(`/api/visitas-formulario?${params}`);
-                const datos = await response.json();
-                
-                const tbody = document.getElementById('tabla-visitas');
-                tbody.innerHTML = '';
-
-                if (datos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">No hay datos</td></tr>';
-                    return;
-                }
-
-                datos.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${item.formulario}</td>
-                        <td>${item.total}</td>
-                        <td>${item.promedio}</td>
-                        <td>${item.ultima_visita ? new Date(item.ultima_visita).toLocaleDateString('es-AR') : '-'}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error:', error);
-            }
+        function formatMes(mesStr) {
+            const [year, month] = mesStr.split('-');
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            return meses[parseInt(month) - 1] + '-' + year;
         }
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const empresasResponse = await fetch('/api/empresas');
-            const empresas = await empresasResponse.json();
-            const select = document.getElementById('empresa');
-            empresas.forEach(e => {
-                const option = document.createElement('option');
-                option.value = e.id;
-                option.text = e.nombre;
-                select.appendChild(option);
+        function buscarVisitas() {
+            const mes = document.getElementById('mes').value;
+            if (!mes) {
+                alert('Por favor selecciona un mes');
+                return;
+            }
+
+            // Obtener datos para el mes seleccionado
+            const datos = DEMO_DATA[mes] || [];
+
+            if (datos.length === 0) {
+                document.getElementById('tabla-visitas').innerHTML = 
+                    '<tr><td colspan="11" class="text-center">No hay datos para este mes</td></tr>';
+                return;
+            }
+
+            // Construir encabezados
+            const encabezados = document.getElementById('encabezados');
+            encabezados.innerHTML = '<th>Empresa</th>';
+            TIPOS.forEach(tipo => {
+                const th = document.createElement('th');
+                th.style.backgroundColor = COLORES[tipo];
+                th.style.color = ['RO', 'IL', 'TI', 'EX'].includes(tipo) ? 'black' : 'white';
+                th.textContent = tipo;
+                encabezados.appendChild(th);
             });
+            const thTotal = document.createElement('th');
+            thTotal.textContent = 'Total';
+            encabezados.appendChild(thTotal);
+
+            // Construir filas de datos
+            const tbody = document.getElementById('tabla-visitas');
+            tbody.innerHTML = '';
+
+            let totalPorTipo = {};
+            TIPOS.forEach(tipo => totalPorTipo[tipo] = 0);
+            let totalGeneral = 0;
+
+            datos.forEach(item => {
+                const row = document.createElement('tr');
+                const tdEmpresa = document.createElement('td');
+                tdEmpresa.textContent = item.empresa;
+                row.appendChild(tdEmpresa);
+
+                let subtotal = 0;
+                TIPOS.forEach(tipo => {
+                    const td = document.createElement('td');
+                    const valor = item[tipo] || 0;
+                    if (valor > 0) {
+                        td.textContent = valor;
+                        td.style.color = COLORES[tipo];
+                        td.style.fontWeight = 'bold';
+                    }
+                    row.appendChild(td);
+
+                    totalPorTipo[tipo] += valor;
+                    subtotal += valor;
+                });
+
+                const tdTotal = document.createElement('td');
+                tdTotal.textContent = subtotal;
+                tdTotal.style.fontWeight = 'bold';
+                row.appendChild(tdTotal);
+
+                tbody.appendChild(row);
+                totalGeneral += subtotal;
+            });
+
+            // Fila de totales
+            const rowTotal = document.createElement('tr');
+            const tdTotalLabel = document.createElement('td');
+            tdTotalLabel.textContent = '';
+            rowTotal.appendChild(tdTotalLabel);
+
+            TIPOS.forEach(tipo => {
+                const td = document.createElement('td');
+                td.textContent = totalPorTipo[tipo];
+                td.style.fontWeight = 'bold';
+                rowTotal.appendChild(td);
+            });
+
+            const tdTotalGeneral = document.createElement('td');
+            tdTotalGeneral.textContent = totalGeneral;
+            tdTotalGeneral.style.fontWeight = 'bold';
+            rowTotal.appendChild(tdTotalGeneral);
+
+            tbody.appendChild(rowTotal);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Establecer mes actual por defecto
+            const hoy = new Date();
+            const mesActual = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+            document.getElementById('mes').value = mesActual;
             buscarVisitas();
         });
     </script>

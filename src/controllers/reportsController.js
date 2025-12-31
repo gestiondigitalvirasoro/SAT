@@ -71,9 +71,26 @@ exports.getVisitasFormulario = async (req, res, next) => {
 
 exports.viewVisitasFormulario = async (req, res, next) => {
   try {
-    const { data: empresas } = await getSupabase().from('empresas').select('*');
-    res.render('pages/visitas-formulario', { empresas: empresas || [], user: req.session.user });
+    let empresas = [];
+    
+    try {
+      const supabaseClient = getSupabase();
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.from('empresas').select('*');
+        if (!error && data) {
+          empresas = data;
+        }
+      }
+    } catch (dbError) {
+      console.log('Database error (using demo mode):', dbError.message);
+    }
+    
+    res.render('pages/visitas-formulario', { 
+      empresas: empresas || [], 
+      user: req.session.user 
+    });
   } catch (error) {
+    console.error('Error rendering visitas-formulario:', error);
     res.status(500).render('pages/error', { error: error.message });
   }
 };

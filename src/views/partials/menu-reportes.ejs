@@ -1,0 +1,59 @@
+<div style="background-color: #f5f5f5; padding: 12px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; gap: 15px;">
+        <a href="/reports/visitas-formulario" style="padding: 6px 12px; background-color: white; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; cursor: pointer; font-size: 14px;">Visitas</a>
+        
+        <div style="position: relative;">
+            <button onclick="toggleReportesMenu()" style="padding: 6px 12px; background-color: white; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; color: #333; font-size: 14px; font-weight: 500;">
+                Reportes ▼
+            </button>
+            <div id="reportesMenu" style="display: none; position: absolute; top: 100%; left: 0; background-color: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px;">
+                <a href="/reports/vencimientos-equipos" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 13px;">📅 Vencimientos de Equipos</a>
+                <a href="/reports/planes-accion" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 13px;">📝 Planes de Acción</a>
+                <a href="/reports/visitas-formulario" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 13px;">✅ Visitas Formulario</a>
+                <a href="/reports/calendario-clientes" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 13px;">📆 Calendario Clientes</a>
+                <a href="/reports/calendario-servicios" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; border-bottom: 1px solid #eee; font-size: 13px;">📆 Calendario Servicios</a>
+                <a href="/reports/notificaciones-servicios" style="display: block; padding: 10px 15px; text-decoration: none; color: #333; font-size: 13px;">🔔 Notificaciones</a>
+            </div>
+        </div>
+
+        <a href="/operaciones" style="padding: 6px 12px; background-color: white; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; cursor: pointer; font-size: 14px;">Operaciones</a>
+        
+        <a href="/maestros" style="padding: 6px 12px; background-color: white; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; color: #333; cursor: pointer; font-size: 14px;">Maestros</a>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <label style="font-size: 13px; font-weight: 500; margin: 0;">Empresa:</label>
+        <select id="menuEmpresa" class="form-control" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; min-width: 150px;">
+            <option value="">-- TODOS</option>
+            <option value="LINOR SRL">LINOR SRL</option>
+            <option value="TecnoPalet">TecnoPalet</option>
+            <option value="Distribuidora González">Distribuidora González</option>
+            <option value="Metalúrgica del Sur">Metalúrgica del Sur</option>
+        </select>
+    </div>
+</div>
+
+<script>
+function toggleReportesMenu() {
+    const menu = document.getElementById('reportesMenu');
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+// Cerrar menú si hace click afuera
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('reportesMenu');
+    const btn = event.target.closest('button');
+    if (!btn && menu && menu.style.display === 'block') {
+        menu.style.display = 'none';
+    }
+});
+
+// Si existe el dropdown de empresa del menú superior, sincronizar con el local
+const menuEmpresa = document.getElementById('menuEmpresa');
+if (menuEmpresa && document.getElementById('empresa')) {
+    menuEmpresa.addEventListener('change', function() {
+        document.getElementById('empresa').value = this.value;
+        document.getElementById('empresa').dispatchEvent(new Event('change'));
+    });
+}
+</script>

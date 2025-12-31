@@ -27,4 +27,12 @@ router.get('/reports/calendario-clientes', requireAuth, reportsController.viewCa
 router.get('/reports/calendario-servicios', requireAuth, reportsController.viewCalendarioServicios);
 router.get('/reports/notificaciones-servicios', requireAuth, reportsController.viewNotificacionesServicios);
 
+// Rutas públicas de reportes (sin autenticación)
+router.get('/public/reports/planes-accion', planesAccionController.viewPlanesAccion);
+router.get('/public/reports/visitas-formulario', reportsController.viewVisitasFormulario);
+router.get('/public/reports/vencimientos-equipos', reportsController.viewVencimientosEquipos);
+router.get('/public/reports/calendario-clientes', reportsController.viewCalendarioClientes);
+router.get('/public/reports/calendario-servicios', reportsController.viewCalendarioServicios);
+router.get('/public/reports/notificaciones-servicios', reportsController.viewNotificacionesServicios);
+
 module.exports = router;

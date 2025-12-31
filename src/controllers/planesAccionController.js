@@ -1,8 +1,13 @@
-const { supabase } = require('../config/database');
+const { supabase, isDemoMode } = require('../config/database');
 
 // Obtener todos los planes de acción con filtros
 async function getPlanesAccion(req, res) {
     try {
+        // Demo mode: return empty array
+        if (isDemoMode || !supabase) {
+            return res.json([]);
+        }
+
         const { empresa_id, locacion_id, fecha_desde, fecha_hasta, estado } = req.query;
 
         let query = supabase
@@ -38,6 +43,11 @@ async function getPlanesAccion(req, res) {
 // Obtener empresas
 async function getEmpresas(req, res) {
     try {
+        // Demo mode: return empty array
+        if (isDemoMode || !supabase) {
+            return res.json([]);
+        }
+
         const { data, error } = await supabase
             .from('empresas')
             .select('*')
@@ -54,6 +64,11 @@ async function getEmpresas(req, res) {
 // Obtener locaciones
 async function getLocaciones(req, res) {
     try {
+        // Demo mode: return empty array
+        if (isDemoMode || !supabase) {
+            return res.json([]);
+        }
+
         const { data, error } = await supabase
             .from('locaciones')
             .select('*')

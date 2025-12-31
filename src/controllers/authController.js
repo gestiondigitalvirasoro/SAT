@@ -1,4 +1,4 @@
-const supabase = require('../config/supabase');
+const { supabase, isDemoMode } = require('../config/supabase');
 const bcrypt = require('bcryptjs');
 
 // Usuarios demo cuando Supabase no está configurado

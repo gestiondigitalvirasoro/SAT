@@ -3,8 +3,7 @@ const { supabase, isDemoMode } = require('../config/database');
 // Obtener todos los planes de acción con filtros
 async function getPlanesAccion(req, res) {
     try {
-        // Demo mode: return empty array
-        if (isDemoMode || !supabase) {
+        if (!supabase) {
             return res.json([]);
         }
 
@@ -14,8 +13,8 @@ async function getPlanesAccion(req, res) {
             .from('planes_accion')
             .select(`
                 *,
-                empresa:empresas(id, nombre),
-                locacion:locaciones(id, nombre)
+                empresa:empresa_id(id, nombre),
+                locacion:locacion_id(id, nombre)
             `);
 
         if (empresa_id) query = query.eq('empresa_id', empresa_id);
@@ -36,15 +35,14 @@ async function getPlanesAccion(req, res) {
         res.json(data || []);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: error.message });
+        res.json([]); // Return empty array on error instead of error response
     }
 }
 
 // Obtener empresas
 async function getEmpresas(req, res) {
     try {
-        // Demo mode: return empty array
-        if (isDemoMode || !supabase) {
+        if (!supabase) {
             return res.json([]);
         }
 
@@ -57,15 +55,14 @@ async function getEmpresas(req, res) {
         res.json(data || []);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: error.message });
+        res.json([]); // Return empty array on error
     }
 }
 
 // Obtener locaciones
 async function getLocaciones(req, res) {
     try {
-        // Demo mode: return empty array
-        if (isDemoMode || !supabase) {
+        if (!supabase) {
             return res.json([]);
         }
 
@@ -78,7 +75,7 @@ async function getLocaciones(req, res) {
         res.json(data || []);
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).json({ error: error.message });
+        res.json([]); // Return empty array on error
     }
 }
 

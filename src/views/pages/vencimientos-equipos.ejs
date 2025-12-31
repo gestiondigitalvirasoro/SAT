@@ -5,48 +5,96 @@
     <%- include('../partials/navbar-dashboard') %>
     <%- include('../partials/dashboard-nav-tabs') %>
     
-    <div class="page-container" style="margin-top: 20px;">
+    <div class="page-container" style="margin-top: 100px;">
         <div class="page-header">
-            <h1>Vencimientos de Equipos - Extintores</h1>
+            <h1>Vencimientos de Equipos Extintores</h1>
         </div>
 
-        <div class="filters-section">
-            <div class="filter-group">
-                <label for="empresa">Empresa</label>
+        <!-- Filtros y Controles -->
+        <div class="controls-section">
+            <div class="empresa-filter">
                 <select id="empresa" class="form-control">
                     <option value="">-- TODOS</option>
                 </select>
             </div>
 
-            <div class="filter-group">
-                <label for="estado">Estado</label>
-                <select id="estado" class="form-control">
-                    <option value="">-- TODOS</option>
-                    <option value="vigente">Vigente</option>
-                    <option value="proximo-vencer">Próximo a vencer</option>
-                    <option value="vencido">Vencido</option>
-                </select>
+            <div class="date-controls">
+                <button class="btn-nav" onclick="previousMonth()">«</button>
+                <button class="btn-hoy" onclick="today()">hoy</button>
+                <button class="btn-nav" onclick="nextMonth()">»</button>
+                <span id="yearDisplay" class="year-display">2025</span>
             </div>
-
-            <button class="btn btn-primary" onclick="buscarVencimientos()">Buscar</button>
         </div>
 
-        <div class="results-section">
-            <table class="table">
+        <!-- Calendario -->
+        <div class="calendar-section">
+            <p class="note">* click en el valor del mes para mayor detalle de equipos.</p>
+            <div class="calendar-wrapper">
+                <table class="calendar-table">
+                    <thead>
+                        <tr id="monthsRow">
+                            <th>Ene</th>
+                            <th>Feb</th>
+                            <th>Mar</th>
+                            <th>Abr</th>
+                            <th>May</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Ago</th>
+                            <th>Sep</th>
+                            <th>Oct</th>
+                            <th>Nov</th>
+                            <th>Dic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="dataRow">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tabla de Detalles -->
+        <div class="details-section">
+            <div class="details-header">
+                <h3 id="detailsTitle">Vencimientos de equipos: May 2025</h3>
+                <div class="action-buttons">
+                    <button class="btn-action" onclick="printTable()">🖨️</button>
+                    <button class="btn-action" onclick="downloadCSV()">☁️</button>
+                </div>
+            </div>
+
+            <table class="details-table">
                 <thead>
                     <tr>
-                        <th>Empresa</th>
+                        <th>Cliente</th>
+                        <th>Locación</th>
+                        <th>Puesto</th>
+                        <th>Nro Equipo</th>
                         <th>Ubicación</th>
-                        <th>Tipo de Extintor</th>
-                        <th>Última Revisión</th>
-                        <th>Próximo Vencimiento</th>
-                        <th>Estado</th>
+                        <th>Sector</th>
+                        <th>Marca</th>
+                        <th>Tipo-Capacidad</th>
+                        <th>Vida Util</th>
+                        <th>Venc Carga</th>
+                        <th>Venc PH</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-vencimientos">
-                    <tr>
-                        <td colspan="6" class="text-center">Cargando datos...</td>
-                    </tr>
+                <tbody id="detailsTableBody">
+                    <!-- Datos dinámicos -->
                 </tbody>
             </table>
         </div>
@@ -54,50 +102,418 @@
 
     <style>
         .page-container {
-            padding: 20px;
-            max-width: 1200px;
+            padding: 20px 40px;
+            max-width: 1400px;
             margin: 0 auto;
+            background: #f5f5f5;
         }
+
         .page-header {
             margin-bottom: 30px;
         }
+
         .page-header h1 {
-            font-size: 28px;
+            font-size: 36px;
             color: #333;
+            font-weight: 300;
+            margin: 0;
         }
-        .filters-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .filter-group {
+
+        .controls-section {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
         }
-        .filter-group label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 13px;
+
+        .empresa-filter {
+            flex: 1;
+            max-width: 400px;
         }
-        .form-control {
-            padding: 10px 12px;
+
+        .empresa-filter select {
+            width: 100%;
+            padding: 10px 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 14px;
+            background: white;
         }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
+
+        .date-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-nav, .btn-hoy {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
             cursor: pointer;
             font-size: 14px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-nav:hover, .btn-hoy:hover {
+            background: #f0f0f0;
+        }
+
+        .year-display {
+            font-size: 16px;
             font-weight: 600;
+            color: #0066cc;
+            min-width: 50px;
+        }
+
+        .calendar-section {
+            background: white;
+            padding: 30px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .note {
+            color: #d32f2f;
+            font-size: 13px;
+            margin: 0 0 20px 0;
+        }
+
+        .calendar-wrapper {
+            overflow-x: auto;
+        }
+
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar-table th {
+            background: #e0e0e0;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .calendar-table td {
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ddd;
+            height: 60px;
+            background: white;
+        }
+
+        .calendar-table td:not(:empty) {
+            cursor: pointer;
+            background: #ffeb3b;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .calendar-table td:not(:empty):hover {
+            background: #fdd835;
+        }
+
+        .details-section {
+            background: white;
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .details-header h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.2);
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .details-table th {
+            background: #e0e0e0;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border: 1px solid #ddd;
+            white-space: nowrap;
+        }
+
+        .details-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            color: #555;
+        }
+
+        .details-table tbody tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .details-table tbody tr:hover {
+            background: #f0f0f0;
+        }
+    </style>
+
+    <script>
+        const DEMO_DATA = {
+            '2025-05': [
+                {
+                    cliente: 'LINOR SRL',
+                    locacion: 'ASERRADERO',
+                    puesto: 2,
+                    nroEquipo: 1,
+                    ubicacion: 'Armado de pallets',
+                    sector: 'Aserradero',
+                    marca: 'GEORGIA',
+                    tipoCapacidad: 'PQS ABC-10',
+                    vidaUtil: 2040,
+                    vencCarga: 'May-2024',
+                    vencPH: 'May-2025'
+                },
+                {
+                    cliente: 'LINOR SRL',
+                    locacion: 'ASERRADERO',
+                    puesto: 4,
+                    nroEquipo: 1,
+                    ubicacion: 'Linea 3 de aserrado',
+                    sector: 'Aserradero',
+                    marca: 'GEORGIA',
+                    tipoCapacidad: 'PQS ABC-5',
+                    vidaUtil: 2040,
+                    vencCarga: 'May-2024',
+                    vencPH: 'May-2025'
+                },
+                {
+                    cliente: 'TecnoPalet',
+                    locacion: 'Aserradero',
+                    puesto: 8,
+                    nroEquipo: 8,
+                    ubicacion: 'oficina',
+                    sector: 'Administracion',
+                    marca: 'ANTARTIDA',
+                    tipoCapacidad: 'HCFC 123 ABC-10',
+                    vidaUtil: 2045,
+                    vencCarga: 'May-2025',
+                    vencPH: 'May-2025'
+                }
+            ],
+            '2025-09': [
+                {
+                    cliente: 'LINOR SRL',
+                    locacion: 'ASERRADERO',
+                    puesto: 1,
+                    nroEquipo: 2,
+                    ubicacion: 'Entrada principal',
+                    sector: 'Aserradero',
+                    marca: 'GEORGIA',
+                    tipoCapacidad: 'PQS ABC-10',
+                    vidaUtil: 2040,
+                    vencCarga: 'Sep-2024',
+                    vencPH: 'Sep-2025'
+                }
+            ],
+            '2025-10': [
+                {
+                    cliente: 'LINOR SRL',
+                    locacion: 'ASERRADERO',
+                    puesto: 5,
+                    nroEquipo: 3,
+                    ubicacion: 'Zona de empaque',
+                    sector: 'Aserradero',
+                    marca: 'GEORGIA',
+                    tipoCapacidad: 'PQS ABC-5',
+                    vidaUtil: 2040,
+                    vencCarga: 'Oct-2024',
+                    vencPH: 'Oct-2025'
+                }
+            ],
+            '2025-11': [
+                {
+                    cliente: 'TecnoPalet',
+                    locacion: 'Aserradero',
+                    puesto: 6,
+                    nroEquipo: 5,
+                    ubicacion: 'Almacen',
+                    sector: 'Almacen',
+                    marca: 'ANTARTIDA',
+                    tipoCapacidad: 'HCFC 123 ABC-10',
+                    vidaUtil: 2043,
+                    vencCarga: 'Nov-2024',
+                    vencPH: 'Nov-2025'
+                }
+            ],
+            '2025-12': [
+                {
+                    cliente: 'LINOR SRL',
+                    locacion: 'ASERRADERO',
+                    puesto: 3,
+                    nroEquipo: 4,
+                    ubicacion: 'Comedor',
+                    sector: 'Administracion',
+                    marca: 'GEORGIA',
+                    tipoCapacidad: 'PQS ABC-10',
+                    vidaUtil: 2040,
+                    vencCarga: 'Dic-2024',
+                    vencPH: 'Dic-2025'
+                },
+                {
+                    cliente: 'TecnoPalet',
+                    locacion: 'Aserradero',
+                    puesto: 7,
+                    nroEquipo: 6,
+                    ubicacion: 'Sanitarios',
+                    sector: 'Administracion',
+                    marca: 'ANTARTIDA',
+                    tipoCapacidad: 'HCFC 123 ABC-10',
+                    vidaUtil: 2044,
+                    vencCarga: 'Dic-2024',
+                    vencPH: 'Dic-2025'
+                },
+                {
+                    cliente: 'LINOR SRL',
+                    locacion: 'OFICINA',
+                    puesto: 1,
+                    nroEquipo: 7,
+                    ubicacion: 'Recepcion',
+                    sector: 'Administracion',
+                    marca: 'GEORGIA',
+                    tipoCapacidad: 'PQS ABC-5',
+                    vidaUtil: 2040,
+                    vencCarga: 'Dic-2024',
+                    vencPH: 'Dic-2025'
+                }
+            ]
+        };
+
+        let currentYear = 2025;
+        let currentMonth = 5; // May (1-12)
+        const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        function updateCalendar() {
+            const dataRow = document.getElementById('dataRow');
+            const cells = dataRow.querySelectorAll('td');
+            
+            // Count items per month
+            const counts = {};
+            Object.keys(DEMO_DATA).forEach(key => {
+                const [year, month] = key.split('-').map(Number);
+                if (year === currentYear) {
+                    counts[month] = DEMO_DATA[key].length;
+                }
+            });
+
+            cells.forEach((cell, index) => {
+                const monthNum = index + 1;
+                const count = counts[monthNum] || '';
+                cell.textContent = count;
+                cell.onclick = count ? () => showDetails(monthNum) : null;
+            });
+
+            document.getElementById('yearDisplay').textContent = currentYear;
+        }
+
+        function showDetails(month) {
+            const monthStr = String(month).padStart(2, '0');
+            const key = `${currentYear}-${monthStr}`;
+            const data = DEMO_DATA[key] || [];
+
+            const title = document.getElementById('detailsTitle');
+            title.textContent = `Vencimientos de equipos: ${months[month-1]} ${currentYear}`;
+
+            const tbody = document.getElementById('detailsTableBody');
+            tbody.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.cliente}</td>
+                    <td>${item.locacion}</td>
+                    <td>${item.puesto}</td>
+                    <td>${item.nroEquipo}</td>
+                    <td>${item.ubicacion}</td>
+                    <td>${item.sector}</td>
+                    <td>${item.marca}</td>
+                    <td>${item.tipoCapacidad}</td>
+                    <td>${item.vidaUtil}</td>
+                    <td>${item.vencCarga}</td>
+                    <td>${item.vencPH}</td>
+                </tr>
+            `).join('');
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            }
+            updateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            }
+            updateCalendar();
+        }
+
+        function today() {
+            const now = new Date();
+            currentYear = now.getFullYear();
+            currentMonth = now.getMonth() + 1;
+            updateCalendar();
+        }
+
+        function printTable() {
+            window.print();
+        }
+
+        function downloadCSV() {
+            alert('Funcionalidad de descarga en desarrollo');
+        }
+
+        // Initialize
+        updateCalendar();
+        showDetails(5); // Show May details initially
+    </script>
+</body>
+</html>
             align-self: flex-end;
         }
         .btn-primary {

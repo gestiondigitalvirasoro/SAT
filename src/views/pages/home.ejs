@@ -1,3 +1,545 @@
+<style>
+    :root {
+        --primary: #FF6B35;
+        --secondary: #F7931E;
+        --dark: #333;
+        --light: #f5f5f5;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        padding: 120px 20px 60px;
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .hero-content {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .hero-content p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 14px 32px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: white;
+        color: var(--primary);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+        background: white;
+        color: var(--primary);
+    }
+
+    /* Carrusel de Seguridad */
+    .safety-carousel {
+        padding: 60px 20px;
+        background: var(--light);
+    }
+
+    .carousel-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .carousel-title {
+        text-align: center;
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 40px;
+    }
+
+    .carousel-wrapper {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+
+    .carousel-track {
+        display: flex;
+        transition: transform 0.3s ease;
+    }
+
+    .carousel-slide {
+        min-width: 100%;
+        padding: 0 10px;
+    }
+
+    .slide-content {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .slide-image {
+        width: 100%;
+        min-height: 300px;
+    }
+
+    .slide-text {
+        padding: 30px 20px;
+    }
+
+    .slide-text h3 {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 15px;
+    }
+
+    .slide-text p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+    }
+
+    .safety-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .safety-badge {
+        background: var(--light);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: var(--primary);
+        font-weight: bold;
+    }
+
+    .carousel-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .carousel-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-btn:hover {
+        background: var(--secondary);
+        transform: scale(1.1);
+    }
+
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+        background: var(--primary);
+        transform: scale(1.3);
+    }
+
+    /* Features Section */
+    .features {
+        padding: 60px 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 50px;
+        font-weight: bold;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+        font-size: 1.3rem;
+        color: var(--dark);
+        margin-bottom: 15px;
+    }
+
+    .feature-card p {
+        color: #666;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }
+
+    /* Benefits Section */
+    .benefits {
+        padding: 60px 20px;
+        background: var(--light);
+    }
+
+    .benefits-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+
+    .benefit-item {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .check-icon {
+        background: var(--primary);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .benefit-item h4 {
+        font-size: 1.1rem;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .benefit-item p {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+        padding: 60px 20px;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .testimonial-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-left: 4px solid var(--primary);
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .quote-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 10px;
+    }
+
+    .testimonial-text {
+        color: #666;
+        line-height: 1.7;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+        font-style: italic;
+    }
+
+    .testimonial-author {
+        color: var(--primary);
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    /* CTA Final */
+    .cta-final {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .cta-final h2 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    .cta-final p {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    /* Media Queries for Mobile */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 100px 15px 40px;
+        }
+
+        .hero-content h1 {
+            font-size: 2rem;
+        }
+
+        .hero-content p {
+            font-size: 1rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 24px;
+        }
+
+        .carousel-title,
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .slide-text {
+            padding: 20px 15px;
+        }
+
+        .slide-text h3 {
+            font-size: 1.2rem;
+        }
+
+        .safety-features {
+            gap: 8px;
+        }
+
+        .safety-badge {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .feature-card {
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+        }
+
+        .benefits-list {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .testimonials-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .testimonial-card {
+            padding: 20px;
+        }
+
+        .cta-final h2 {
+            font-size: 1.5rem;
+        }
+
+        .cta-final p {
+            font-size: 1rem;
+        }
+
+        .carousel-controls {
+            gap: 10px;
+        }
+
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero {
+            padding: 80px 10px 30px;
+        }
+
+        .hero-content h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .carousel-title,
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .slide-text h3 {
+            font-size: 1rem;
+        }
+
+        .feature-card {
+            padding: 15px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+        }
+
+        .check-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .benefit-item {
+            gap: 15px;
+        }
+
+        .cta-final {
+            padding: 40px 15px;
+        }
+
+        .cta-final h2 {
+            font-size: 1.2rem;
+        }
+
+        nav {
+            padding: 0.5rem 10px;
+        }
+
+        .logo-icon svg {
+            width: 80px;
+            height: 80px;
+        }
+
+        .logo-text {
+            font-size: 0.9rem;
+        }
+
+        .nav-links {
+            gap: 15px;
+        }
+
+        .nav-links a {
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
 <section class="hero">
     <div class="hero-content">
         <h1>POTENCIA ACTIVA</h1>

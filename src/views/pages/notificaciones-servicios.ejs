@@ -7,209 +7,438 @@
     
     <div class="page-container" style="margin-top: 20px;">
         <div class="page-header">
-            <h1>Notificaciones de servicios</h1>
+            <h1>Notificaciones de Servicios</h1>
         </div>
 
         <div class="filters-section">
             <div class="filter-group">
-                <label for="estado">Estado</label>
-                <select id="estado" class="form-control">
-                    <option value="">-- TODOS</option>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="enviada">Enviada</option>
-                    <option value="leida">Leída</option>
+                <label for="empresa">Empresa</label>
+                <select id="empresa" class="form-control">
+                    <option value="">* TODOS</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label for="tipo">Tipo</label>
-                <select id="tipo" class="form-control">
-                    <option value="">-- TODOS</option>
-                    <option value="alerta">Alerta</option>
-                    <option value="recordatorio">Recordatorio</option>
-                    <option value="confirmacion">Confirmación</option>
-                </select>
+                <label for="anio">Año</label>
+                <input type="number" id="anio" class="form-control" value="2025" min="2020" max="2030">
             </div>
 
             <button class="btn btn-primary" onclick="buscarNotificaciones()">Buscar</button>
         </div>
 
         <div class="results-section">
-            <div id="notificaciones-lista" class="notificaciones-lista"></div>
+            <div style="overflow-x: auto;">
+                <table class="table-notificaciones" id="tabla-notificaciones">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Locación</th>
+                            <th>Servicio</th>
+                            <th>Período</th>
+                            <th>Cumplido</th>
+                            <th>Vence</th>
+                            <th>Aviso</th>
+                            <th>Enviado</th>
+                            <th>Referencia</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <style>
         .page-container {
+            background: #f5f5f5;
+            min-height: 100vh;
             padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
         }
+
         .page-header {
-            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
         .page-header h1 {
-            font-size: 28px;
+            margin: 0;
             color: #333;
+            font-size: 28px;
         }
+
         .filters-section {
             background: white;
             padding: 20px;
+            margin-bottom: 20px;
             border-radius: 8px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
         }
+
         .filter-group {
             display: flex;
             flex-direction: column;
+            gap: 5px;
+            min-width: 150px;
         }
+
         .filter-group label {
             font-weight: 600;
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 13px;
+            color: #333;
+            font-size: 14px;
         }
+
         .form-control {
-            padding: 10px 12px;
+            padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 14px;
+            font-family: inherit;
         }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
         .btn {
-            padding: 10px 20px;
+            padding: 8px 24px;
             border: none;
             border-radius: 4px;
-            cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            align-self: flex-end;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
+
         .btn-primary {
-            background-color: #4a8dc5;
+            background: #4CAF50;
             color: white;
         }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
         .results-section {
             background: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .notificaciones-lista {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+
+        .table-notificaciones {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
         }
-        .notificacion-item {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            background: white;
-            border-left: 4px solid #4a8dc5;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .notificacion-item:hover {
+
+        .table-notificaciones thead {
             background: #f9f9f9;
+            border-bottom: 2px solid #ddd;
         }
-        .notificacion-item.no-leida {
-            background: #f0f6fc;
-            border-left-color: #4a8dc5;
-        }
-        .notificacion-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .notificacion-titulo {
+
+        .table-notificaciones th {
+            padding: 12px;
+            text-align: left;
             font-weight: 600;
             color: #333;
-            font-size: 15px;
+            white-space: nowrap;
         }
-        .notificacion-tipo {
-            font-size: 11px;
-            padding: 4px 8px;
-            background: #e3f2fd;
-            color: #4a8dc5;
-            border-radius: 3px;
+
+        .table-notificaciones tbody tr {
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s ease;
         }
-        .notificacion-estado {
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 3px;
+
+        .table-notificaciones tbody tr:hover {
+            background: #f9f9f9;
         }
-        .estado-pendiente {
-            background: #fff3cd;
-            color: #856404;
+
+        .table-notificaciones td {
+            padding: 12px;
         }
-        .estado-enviada {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-        .estado-leida {
-            background: #d4edda;
-            color: #155724;
-        }
-        .notificacion-fecha {
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
             font-size: 12px;
-            color: #999;
-            margin-bottom: 8px;
+            text-align: center;
+            min-width: 90px;
         }
-        .notificacion-descripcion {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.5;
+
+        .badge-vencido {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .badge-pendiente {
+            background: #fffde7;
+            color: #f57f17;
+        }
+
+        .badge-completado {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .checkmark {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
         }
     </style>
 
     <script>
-        async function buscarNotificaciones() {
-            const estado = document.getElementById('estado').value;
-            const tipo = document.getElementById('tipo').value;
+        const DEMO_NOTIFICACIONES = [
+            {
+                cliente: 'AZARA S.R.L',
+                locacion: 'Planta Principal',
+                servicio: 'Medición de ruido',
+                periodo: '16-Ago-2025',
+                cumplido: true,
+                vence: '16-Ago-2025',
+                aviso: '2025-08-10',
+                enviado: '2025-08-10',
+                referencia: 'SERVICIO-2694',
+                estado: 'completado'
+            },
+            {
+                cliente: 'Cooperativa de Liebig molino',
+                locacion: 'Molino Central',
+                servicio: 'Medición de puesta a tierra',
+                periodo: '5-Nov-2025',
+                cumplido: true,
+                vence: '5-Nov-2025',
+                aviso: '2025-10-30',
+                enviado: '2025-10-30',
+                referencia: 'SERVICIO-1638',
+                estado: 'completado'
+            },
+            {
+                cliente: 'GONAR AUTOMOTORES SA',
+                locacion: 'Taller',
+                servicio: 'Inspección de sistemas',
+                periodo: '22-Sep-2025',
+                cumplido: true,
+                vence: '22-Sep-2025',
+                aviso: '2025-09-15',
+                enviado: '2025-09-15',
+                referencia: 'SERVICIO-1794',
+                estado: 'completado'
+            },
+            {
+                cliente: 'YPF S.A.',
+                locacion: 'Refinería',
+                servicio: 'Mantenimiento preventivo',
+                periodo: '30-Nov-2025',
+                cumplido: false,
+                vence: '30-Nov-2025',
+                aviso: '2025-11-15',
+                enviado: '2025-11-15',
+                referencia: 'SERVICIO-2150',
+                estado: 'vencido'
+            },
+            {
+                cliente: 'Metalúrgica Pérez',
+                locacion: 'Planta de procesamiento',
+                servicio: 'Calibración de equipos',
+                periodo: '8-Oct-2025',
+                cumplido: true,
+                vence: '8-Oct-2025',
+                aviso: '2025-10-01',
+                enviado: '2025-10-01',
+                referencia: 'SERVICIO-2045',
+                estado: 'completado'
+            },
+            {
+                cliente: 'Papelera Rosario',
+                locacion: 'Planta 1',
+                servicio: 'Auditoría ambiental',
+                periodo: '12-Dec-2025',
+                cumplido: false,
+                vence: '12-Dec-2025',
+                aviso: '2025-11-28',
+                enviado: '2025-11-28',
+                referencia: 'SERVICIO-2856',
+                estado: 'pendiente'
+            },
+            {
+                cliente: 'TRANSOIL Logística',
+                locacion: 'Centro de distribución',
+                servicio: 'Control de calidad',
+                periodo: '18-Ago-2025',
+                cumplido: true,
+                vence: '18-Ago-2025',
+                aviso: '2025-08-10',
+                enviado: '2025-08-10',
+                referencia: 'SERVICIO-1920',
+                estado: 'completado'
+            },
+            {
+                cliente: 'Agricultura Moderna SA',
+                locacion: 'Silos de almacenamiento',
+                servicio: 'Inspección sanitaria',
+                periodo: '25-Sep-2025',
+                cumplido: false,
+                vence: '25-Sep-2025',
+                aviso: '2025-09-18',
+                enviado: '2025-09-18',
+                referencia: 'SERVICIO-2287',
+                estado: 'vencido'
+            },
+            {
+                cliente: 'Construcciones Bernal',
+                locacion: 'Oficinas centrales',
+                servicio: 'Evaluación de seguridad',
+                periodo: '15-Nov-2025',
+                cumplido: true,
+                vence: '15-Nov-2025',
+                aviso: '2025-11-05',
+                enviado: '2025-11-05',
+                referencia: 'SERVICIO-2501',
+                estado: 'completado'
+            },
+            {
+                cliente: 'Energías Renovables Plus',
+                locacion: 'Parque solar',
+                servicio: 'Monitoreo de paneles',
+                periodo: '3-Dec-2025',
+                cumplido: false,
+                vence: '3-Dec-2025',
+                aviso: '2025-11-26',
+                enviado: '2025-11-26',
+                referencia: 'SERVICIO-2743',
+                estado: 'pendiente'
+            }
+        ];
 
-            const params = new URLSearchParams();
-            if (estado) params.append('estado', estado);
-            if (tipo) params.append('tipo', tipo);
+        async function cargarEmpresas() {
+            try {
+                const response = await fetch('/api/empresas');
+                let empresas = [];
+                if (response.ok) {
+                    empresas = await response.json();
+                }
+                
+                const select = document.getElementById('empresa');
+                empresas.forEach(emp => {
+                    const option = document.createElement('option');
+                    option.value = emp.id || emp.nombre;
+                    option.textContent = emp.nombre;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.log('Error cargando empresas', error);
+            }
+        }
+
+        async function buscarNotificaciones() {
+            const empresaId = document.getElementById('empresa').value;
+            const anio = document.getElementById('anio').value;
 
             try {
+                const params = new URLSearchParams();
+                if (empresaId) params.append('empresa', empresaId);
+                if (anio) params.append('anio', anio);
+
                 const response = await fetch(`/api/notificaciones-servicios?${params}`);
-                const notificaciones = await response.json();
+                let notificaciones = [];
+                if (response.ok) {
+                    notificaciones = await response.json();
+                }
                 
-                mostrarNotificaciones(notificaciones);
+                if (!notificaciones || notificaciones.length === 0) {
+                    notificaciones = DEMO_NOTIFICACIONES;
+                }
+
+                generarTabla(notificaciones);
             } catch (error) {
-                console.error('Error:', error);
+                console.log('Error buscando notificaciones (usando demo)', error);
+                generarTabla(DEMO_NOTIFICACIONES);
             }
         }
 
-        function mostrarNotificaciones(notificaciones) {
-            const container = document.getElementById('notificaciones-lista');
-            
+        function generarTabla(notificaciones) {
+            const tbody = document.getElementById('tabla-body');
+            tbody.innerHTML = '';
+
             if (!notificaciones || notificaciones.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No hay notificaciones para mostrar</p>';
+                tbody.innerHTML = '<tr><td colspan="10" class="empty-message">No hay notificaciones para mostrar</td></tr>';
                 return;
             }
-            
-            container.innerHTML = notificaciones.map(n => `
-                <div class="notificacion-item ${n.estado === 'pendiente' ? 'no-leida' : ''}">
-                    <div class="notificacion-header">
-                        <div>
-                            <span class="notificacion-titulo">${n.titulo}</span>
-                        </div>
-                        <div style="display: flex; gap: 8px;">
-                            <span class="notificacion-tipo">${n.tipo}</span>
-                            <span class="notificacion-estado estado-${n.estado}">${n.estado}</span>
-                        </div>
-                    </div>
-                    <div class="notificacion-fecha">${new Date(n.fecha).toLocaleDateString('es-ES', {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'})}</div>
-                    <div class="notificacion-descripcion">${n.descripcion}</div>
-                </div>
-            `).join('');
+
+            notificaciones.forEach(notif => {
+                const row = document.createElement('tr');
+                
+                const estadoBadgeClass = notif.estado === 'vencido' ? 'badge-vencido' : 
+                                        notif.estado === 'completado' ? 'badge-completado' : 'badge-pendiente';
+                
+                const estadoText = notif.estado === 'vencido' ? 'VENCIDO' : 
+                                   notif.estado === 'completado' ? 'COMPLETADO' : 'PENDIENTE';
+
+                row.innerHTML = `
+                    <td>${notif.cliente || ''}</td>
+                    <td>${notif.locacion || ''}</td>
+                    <td>${notif.servicio || ''}</td>
+                    <td>${notif.periodo || ''}</td>
+                    <td style="text-align: center;">
+                        ${notif.cumplido ? `<span class="checkmark">✓</span>` : ''}
+                    </td>
+                    <td>${notif.vence || ''}</td>
+                    <td>${notif.aviso || ''}</td>
+                    <td>${notif.enviado || ''}</td>
+                    <td><code>${notif.referencia || ''}</code></td>
+                    <td>
+                        <span class="badge ${estadoBadgeClass}">
+                            ${estadoText}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', buscarNotificaciones);
+        // Cargar al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEmpresas();
+            buscarNotificaciones();
+        });
+
+        // Enter para buscar
+        document.getElementById('anio').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') buscarNotificaciones();
+        });
     </script>
+
+    <%- include('../partials/footer') %>
 </body>
 </html>

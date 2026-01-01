@@ -251,3 +251,33 @@ exports.viewNotificacionesServicios = async (req, res, next) => {
     res.status(500).render('pages/error', { error: error.message });
   }
 };
+
+// Crear nueva visita
+exports.createVisita = async (req, res, next) => {
+  try {
+    const { empresa_id, locacion_id, tipo_formulario, fecha, observaciones } = req.body;
+    
+    if (!empresa_id || !tipo_formulario || !fecha) {
+      return res.status(400).json({ error: 'Faltan campos requeridos' });
+    }
+
+    const { data, error } = await getSupabase()
+      .from('visitas_formulario')
+      .insert([{
+        empresa_id,
+        locacion_id,
+        tipo_formulario,
+        fecha,
+        observaciones,
+        estado: 'completado',
+        created_at: new Date().toISOString()
+      }])
+      .select();
+
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (err) {
+    console.error('Error creando visita:', err);
+    res.status(500).json({ error: 'Error al guardar la visita' });
+  }
+};

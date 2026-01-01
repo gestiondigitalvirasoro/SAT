@@ -91,9 +91,46 @@ async function viewPlanesAccion(req, res) {
     }
 }
 
+// Crear nueva empresa
+async function createEmpresa(req, res) {
+    try {
+        if (!supabase) {
+            return res.status(500).json({ error: 'Database connection not available' });
+        }
+
+        const { nombre, rubro, contacto, telefono, email, direccion, cuit } = req.body;
+
+        if (!nombre) {
+            return res.status(400).json({ error: 'El nombre de la empresa es requerido' });
+        }
+
+        const { data, error } = await supabase
+            .from('empresas')
+            .insert([{
+                nombre,
+                rubro,
+                contacto,
+                telefono,
+                email,
+                direccion,
+                cuit,
+                created_at: new Date().toISOString()
+            }])
+            .select();
+
+        if (error) throw error;
+        
+        res.status(201).json(data[0]);
+    } catch (error) {
+        console.error('Error creando empresa:', error);
+        res.status(500).json({ error: 'Error al guardar la empresa' });
+    }
+}
+
 module.exports = {
     getPlanesAccion,
     getEmpresas,
     getLocaciones,
-    viewPlanesAccion
+    viewPlanesAccion,
+    createEmpresa
 };

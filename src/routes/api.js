@@ -13,8 +13,14 @@ router.get('/planes-accion', planesAccionController.getPlanesAccion);
 router.get('/empresas', planesAccionController.getEmpresas);
 router.get('/locaciones', planesAccionController.getLocaciones);
 
+// Crear nuevas empresas
+router.post('/empresas', planesAccionController.createEmpresa);
+
 // Visitas por Formulario
 router.get('/visitas-formulario', reportsController.getVisitasFormulario);
+
+// Crear nueva visita
+router.post('/visitas', reportsController.createVisita);
 
 // Vencimientos de Equipos
 router.get('/vencimientos-equipos', reportsController.getVencimientosEquipos);

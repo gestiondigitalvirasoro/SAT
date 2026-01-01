@@ -383,12 +383,18 @@
         const dropdown = event.target.nextElementSibling;
         dropdown.classList.toggle('active');
     }
-    
-    // Cerrar dropdown al hacer click fuera
+
+    // Permitir clicks en dropdown items
     document.addEventListener('click', function(event) {
-        const dropdown = document.querySelector('.tab-dropdown-menu');
+        if (event.target.classList.contains('dropdown-item')) {
+            event.stopPropagation();
+            return true;
+        }
+        
+        // Cerrar dropdown al hacer click fuera
+        const dropdown = document.querySelector('.tab-dropdown-menu.active');
         const wrapper = document.querySelector('.tab-dropdown-wrapper');
-        if (dropdown && !wrapper.contains(event.target)) {
+        if (dropdown && wrapper && !wrapper.contains(event.target)) {
             dropdown.classList.remove('active');
         }
     });

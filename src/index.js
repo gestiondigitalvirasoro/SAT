@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Middleware de demostración: crear sesión automática
 app.use((req, res, next) => {
-  if (!req.session.user && (req.path === '/dashboard' || req.path.startsWith('/reports'))) {
+  if (!req.session.user && (req.path === '/dashboard' || req.path.startsWith('/reports') || req.path === '/nueva-visita' || req.path === '/nueva-empresa')) {
     req.session.user = {
       id: 1,
       name: 'Administrador Demo',

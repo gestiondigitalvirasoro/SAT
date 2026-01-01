@@ -1,250 +1,149 @@
 <!DOCTYPE html>
 <html lang="es">
 <body>
-    
-    <div class="form-container" style="margin-top: 100px; padding: 40px 20px;">
-        <div class="form-card">
-            <h1>Nueva Visita</h1>
-            <form id="formNuevaVisita" onsubmit="guardarVisita(event)">
-                <div class="form-group">
-                    <label for="empresa">Empresa *</label>
-                    <select id="empresa" name="empresa" required>
-                        <option value="">-- Seleccionar empresa --</option>
-                    </select>
-                </div>
+    <div class="visita-container" style="margin-top: 100px; padding: 40px 20px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+        <h1 style="margin-bottom: 40px;">Nueva Visita</h1>
+        
+        <style>
+            .visita-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 30px;
+                margin-bottom: 30px;
+            }
 
-                <div class="form-group">
-                    <label for="locacion">Locación *</label>
-                    <select id="locacion" name="locacion" required>
-                        <option value="">-- Seleccionar locación --</option>
-                    </select>
-                </div>
+            .visita-card {
+                background: #f9f9f9;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 25px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
 
-                <div class="form-group">
-                    <label for="formulario">Tipo de Formulario *</label>
-                    <select id="formulario" name="formulario" required>
-                        <option value="">-- Seleccionar tipo --</option>
-                        <option value="GE">Gestión Empresaria (GE)</option>
-                        <option value="RU">Relevamiento de Riesgos Unitario (RU)</option>
-                        <option value="ER">Evaluación de Riesgos (ER)</option>
-                        <option value="RO">Relevamiento Organizacional (RO)</option>
-                        <option value="IL">Inspección Laboral (IL)</option>
-                        <option value="TI">Talleres de Inducción (TI)</option>
-                        <option value="EX">Exámenes Médicos (EX)</option>
-                        <option value="VL">Vigilancia Laboral (VL)</option>
-                        <option value="PP">Programa de Prevención (PP)</option>
-                        <option value="OTROS">Otros</option>
-                    </select>
-                </div>
+            .visita-card h3 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+            }
 
-                <div class="form-group">
-                    <label for="fecha">Fecha *</label>
-                    <input type="date" id="fecha" name="fecha" required>
-                </div>
+            .visita-option {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px;
+                margin-bottom: 10px;
+                background: white;
+                border-radius: 6px;
+                border: 1px solid #e8e8e8;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
 
-                <div class="form-group">
-                    <label for="observaciones">Observaciones</label>
-                    <textarea id="observaciones" name="observaciones" rows="4" placeholder="Notas sobre la visita..."></textarea>
-                </div>
+            .visita-option:hover {
+                background: #f5f5f5;
+                border-color: #d0d0d0;
+            }
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Guardar Visita</button>
-                    <a href="/dashboard" class="btn btn-secondary">Cancelar</a>
+            .visita-option-label {
+                font-size: 0.95rem;
+                color: #555;
+                flex: 1;
+            }
+
+            .visita-badge {
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-weight: 700;
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .badge-ge { background: #10b981; color: black; }
+            .badge-vl { background: #8b5cf6; color: white; }
+            .badge-ro { background: #a3e635; color: black; }
+            .badge-ex { background: #f59e0b; color: black; }
+            .badge-pp { background: #ec4899; color: white; }
+            .badge-il { background: #fef3c7; color: black; }
+            .badge-ti { background: #fcd34d; color: black; }
+            .badge-ru { background: #34d399; color: black; }
+            .badge-er { background: #9ca3af; color: black; }
+
+            @media (max-width: 768px) {
+                .visita-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+
+        <div class="visita-grid">
+            <!-- Visitas -->
+            <div class="visita-card">
+                <h3>Visitas</h3>
+                <div class="visita-option" onclick="seleccionarVisita('GE', 'Visita Simple')">
+                    <span class="visita-option-label">Visita Simple</span>
+                    <span class="visita-badge badge-ge">GE</span>
                 </div>
-            </form>
+                <div class="visita-option" onclick="seleccionarVisita('VL', 'Visita Libre')">
+                    <span class="visita-option-label">Visita Libre</span>
+                    <span class="visita-badge badge-vl">VL</span>
+                </div>
+            </div>
+
+            <!-- Verificaciones -->
+            <div class="visita-card">
+                <h3>Verificaciones</h3>
+                <div class="visita-option" onclick="seleccionarVisita('RO', 'Informe de visitas - Ropería')">
+                    <span class="visita-option-label">Informe de visitas - Ropería</span>
+                    <span class="visita-badge badge-ro">RO</span>
+                </div>
+                <div class="visita-option" onclick="seleccionarVisita('EX', 'Extintores')">
+                    <span class="visita-option-label">Extintores</span>
+                    <span class="visita-badge badge-ex">EX</span>
+                </div>
+                <div class="visita-option" onclick="seleccionarVisita('PP', 'Verificación de uso EPP')">
+                    <span class="visita-option-label">Verificación de uso EPP</span>
+                    <span class="visita-badge badge-pp">PP</span>
+                </div>
+            </div>
+
+            <!-- Mediciones -->
+            <div class="visita-card">
+                <h3>Mediciones</h3>
+                <div class="visita-option" onclick="seleccionarVisita('IL', 'Iluminación')">
+                    <span class="visita-option-label">Iluminación</span>
+                    <span class="visita-badge badge-il">IL</span>
+                </div>
+                <div class="visita-option" onclick="seleccionarVisita('TI', 'Puesta a tierra')">
+                    <span class="visita-option-label">Puesta a tierra</span>
+                    <span class="visita-badge badge-ti">TI</span>
+                </div>
+                <div class="visita-option" onclick="seleccionarVisita('RU', 'Medición de ruido')">
+                    <span class="visita-option-label">Medición de ruido</span>
+                    <span class="visita-badge badge-ru">RU</span>
+                </div>
+                <div class="visita-option" onclick="seleccionarVisita('ER', 'Ergonomía')">
+                    <span class="visita-option-label">Ergonomía</span>
+                    <span class="visita-badge badge-er">ER</span>
+                </div>
+            </div>
         </div>
+
+        <!-- Formulario oculto para guardar -->
+        <form id="formNuevaVisita" style="display: none;">
+            <input type="hidden" id="tipoVisita" name="tipoVisita">
+            <input type="hidden" id="etiquetaVisita" name="etiquetaVisita">
+        </form>
     </div>
 
-    <style>
-        .form-container {
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .form-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .form-card h1 {
-            margin-top: 0;
-            color: #333;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #FF6B35;
-            box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #FF6B35;
-            color: white;
-            flex: 1;
-        }
-
-        .btn-primary:hover {
-            background: #E55A25;
-        }
-
-        .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
-            flex: 1;
-        }
-
-        .btn-secondary:hover {
-            background: #e0e0e0;
-        }
-
-        @media (max-width: 600px) {
-            .form-container {
-                padding: 20px 10px;
-            }
-
-            .form-card {
-                padding: 20px;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
-
     <script>
-        async function cargarEmpresas() {
-            try {
-                const response = await fetch('/api/empresas');
-                if (response.ok) {
-                    const empresas = await response.json();
-                    const select = document.getElementById('empresa');
-                    empresas.forEach(emp => {
-                        const option = document.createElement('option');
-                        option.value = emp.id || emp.nombre;
-                        option.textContent = emp.nombre;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.log('Error cargando empresas', error);
-            }
+        function seleccionarVisita(codigo, etiqueta) {
+            alert(`✅ Seleccionaste: ${etiqueta} (${codigo})`);
+            // Aquí irá la lógica para ir al formulario detallado de esa visita
         }
-
-        async function cargarLocaciones(empresaId) {
-            try {
-                const response = await fetch(`/api/locaciones?empresa=${empresaId}`);
-                if (response.ok) {
-                    const locaciones = await response.json();
-                    const select = document.getElementById('locacion');
-                    select.innerHTML = '<option value="">-- Seleccionar locación --</option>';
-                    locaciones.forEach(loc => {
-                        const option = document.createElement('option');
-                        option.value = loc.id || loc.nombre;
-                        option.textContent = loc.nombre;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.log('Error cargando locaciones', error);
-            }
-        }
-
-        async function guardarVisita(event) {
-            event.preventDefault();
-
-            const visita = {
-                empresa_id: document.getElementById('empresa').value,
-                locacion_id: document.getElementById('locacion').value,
-                tipo_formulario: document.getElementById('formulario').value,
-                fecha: document.getElementById('fecha').value,
-                observaciones: document.getElementById('observaciones').value
-            };
-
-            try {
-                const response = await fetch('/api/visitas', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(visita)
-                });
-
-                if (response.ok) {
-                    alert('✅ Visita guardada correctamente');
-                    window.location.href = '/dashboard';
-                } else {
-                    alert('❌ Error al guardar la visita');
-                }
-            } catch (error) {
-                console.log('Error guardando visita', error);
-                alert('❌ Error al guardar la visita');
-            }
-        }
-
-        // Cargar empresas al iniciar
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarEmpresas();
-            
-            // Cargar locaciones cuando cambia empresa
-            document.getElementById('empresa').addEventListener('change', function() {
-                if (this.value) {
-                    cargarLocaciones(this.value);
-                }
-            });
-
-            // Set fecha actual
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('fecha').value = hoy;
-        });
     </script>
 </body>
 </html>

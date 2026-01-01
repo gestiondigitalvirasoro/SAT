@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<%- include('../partials/head', { title: 'Nueva Empresa - Potencia Activa' }) %>
+<body>
+    <%- include('../partials/navbar-dashboard') %>
+    
+    <div class="form-container" style="margin-top: 100px; padding: 40px 20px;">
+        <div class="form-card">
+            <h1>Nueva Empresa</h1>
+            <form id="formNuevaEmpresa" onsubmit="guardarEmpresa(event)">
+                <div class="form-group">
+                    <label for="nombre">Nombre de la Empresa *</label>
+                    <input type="text" id="nombre" name="nombre" required placeholder="Ej: Empresa ABC S.A.">
+                </div>
+
+                <div class="form-group">
+                    <label for="rubro">Rubro/Sector *</label>
+                    <select id="rubro" name="rubro" required>
+                        <option value="">-- Seleccionar rubro --</option>
+                        <option value="Construcción">Construcción</option>
+                        <option value="Manufactura">Manufactura</option>
+                        <option value="Comercio">Comercio</option>
+                        <option value="Servicios">Servicios</option>
+                        <option value="Agricultura">Agricultura</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Salud">Salud</option>
+                        <option value="Educación">Educación</option>
+                        <option value="Tecnología">Tecnología</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="contacto">Persona de Contacto</label>
+                    <input type="text" id="contacto" name="contacto" placeholder="Nombre del contacto">
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" placeholder="Ej: +54 11 1234-5678">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="contacto@empresa.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="direccion">Dirección</label>
+                    <input type="text" id="direccion" name="direccion" placeholder="Dirección principal">
+                </div>
+
+                <div class="form-group">
+                    <label for="cuit">CUIT/CUIL</label>
+                    <input type="text" id="cuit" name="cuit" placeholder="Ej: 20-12345678-9">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Guardar Empresa</button>
+                    <a href="/dashboard" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .form-card h1 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 5px rgba(255, 107, 53, 0.3);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #FF6B35;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #E55A25;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 20px 10px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <script>
+        async function guardarEmpresa(event) {
+            event.preventDefault();
+
+            const empresa = {
+                nombre: document.getElementById('nombre').value,
+                rubro: document.getElementById('rubro').value,
+                contacto: document.getElementById('contacto').value,
+                telefono: document.getElementById('telefono').value,
+                email: document.getElementById('email').value,
+                direccion: document.getElementById('direccion').value,
+                cuit: document.getElementById('cuit').value
+            };
+
+            try {
+                const response = await fetch('/api/empresas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(empresa)
+                });
+
+                if (response.ok) {
+                    alert('✅ Empresa guardada correctamente');
+                    window.location.href = '/dashboard';
+                } else {
+                    alert('❌ Error al guardar la empresa');
+                }
+            } catch (error) {
+                console.log('Error guardando empresa', error);
+                alert('❌ Error al guardar la empresa');
+            }
+        }
+    </script>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

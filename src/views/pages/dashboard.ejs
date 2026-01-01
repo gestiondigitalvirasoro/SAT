@@ -222,21 +222,18 @@
 
         // Manejador de acciones
         function handleAction(action) {
-            console.log('Acción seleccionada:', action);
-            
             switch(action) {
                 case 'nueva-visita':
-                    alert('Nueva Visita - Próximamente');
-                    // Aquí iría la navegación a crear nueva visita
+                    window.location.href = '/nueva-visita';
                     break;
                 case 'visita-servicios':
                     alert('Visita de Servicios - Próximamente');
                     break;
                 case 'generar-reporte':
-                    alert('Generar Reporte - Próximamente');
+                    window.location.href = '/reports/planes-accion';
                     break;
                 case 'nueva-empresa':
-                    alert('Nueva Empresa - Próximamente');
+                    window.location.href = '/nueva-empresa';
                     break;
             }
         }

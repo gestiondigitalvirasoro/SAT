@@ -19,6 +19,15 @@ router.get('/dashboard', AuthController.renderDashboard);
 router.get('/faq', pageController.faq);
 router.get('/about', pageController.about);
 
+// Rutas de formularios para crear nuevos registros
+router.get('/nueva-visita', requireAuth, (req, res) => {
+  res.render('pages/nueva-visita');
+});
+
+router.get('/nueva-empresa', requireAuth, (req, res) => {
+  res.render('pages/nueva-empresa');
+});
+
 // Rutas protegidas de reportes
 router.get('/reports/planes-accion', requireAuth, planesAccionController.viewPlanesAccion);
 router.get('/reports/visitas-formulario', requireAuth, reportsController.viewVisitasFormulario);

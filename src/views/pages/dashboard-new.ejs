@@ -119,6 +119,7 @@
         transition: background-color 0.2s;
         border-bottom: 1px solid rgba(0,0,0,0.1);
         font-size: 13px;
+        cursor: pointer;
     }
     
     .dropdown-item:hover {
@@ -262,8 +263,8 @@
                 <button class="tab-btn" onclick="toggleTabDropdown(event)">Operaciones ▼</button>
                 <div class="tab-dropdown-menu">
                     <div class="dropdown-header">Operaciones</div>
-                    <a href="/visitas" class="dropdown-item">Visita</a>
-                    <a href="javascript:void(0)" class="dropdown-item" onclick="alert('Visita de Servicios - Próximamente')">Visita de Servicios</a>
+                    <div class="dropdown-item" onclick="window.location.href='/visitas'">Visita</div>
+                    <div class="dropdown-item" onclick="alert('Visita de Servicios - Próximamente')">Visita de Servicios</div>
                 </div>
             </div>
             <button class="tab-btn" onclick="showTab('maestros')">Maestros</button>

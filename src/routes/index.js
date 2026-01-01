@@ -21,7 +21,7 @@ router.get('/about', pageController.about);
 
 // Rutas de formularios para crear nuevos registros
 router.get('/nueva-visita', requireAuth, (req, res) => {
-  res.render('layouts/main', { 
+  res.render('layouts/dashboard', { 
     title: 'Nueva Visita - POTENCIA ACTIVA',
     page: '../pages/nueva-visita',
     user: req.session.user
@@ -29,7 +29,7 @@ router.get('/nueva-visita', requireAuth, (req, res) => {
 });
 
 router.get('/nueva-empresa', requireAuth, (req, res) => {
-  res.render('layouts/main', { 
+  res.render('layouts/dashboard', { 
     title: 'Nueva Empresa - POTENCIA ACTIVA',
     page: '../pages/nueva-empresa',
     user: req.session.user

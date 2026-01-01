@@ -293,22 +293,22 @@
                 <div class="actions-card">
                     <h3>Acciones</h3>
                     <div class="actions-list">
-                        <div class="action-item">
+                        <div class="action-item" onclick="handleAction('nueva-visita')">
                             <span class="action-icon">📋</span>
                             <span>Nueva Visita</span>
                             <button class="btn-action">+</button>
                         </div>
-                        <div class="action-item">
+                        <div class="action-item" onclick="handleAction('visita-servicios')">
                             <span class="action-icon">🔧</span>
                             <span>Visita de Servicios</span>
                             <button class="btn-action">+</button>
                         </div>
-                        <div class="action-item">
+                        <div class="action-item" onclick="handleAction('generar-reporte')">
                             <span class="action-icon">📊</span>
                             <span>Generar Reporte</span>
                             <button class="btn-action">+</button>
                         </div>
-                        <div class="action-item">
+                        <div class="action-item" onclick="handleAction('nueva-empresa')">
                             <span class="action-icon">🏢</span>
                             <span>Nueva Empresa</span>
                             <button class="btn-action">+</button>
@@ -440,4 +440,23 @@
     } else {
         initChart();
     }
+
+    // Manejador de acciones
+    function handleAction(action) {
+        switch(action) {
+            case 'nueva-visita':
+                window.location.href = '/nueva-visita';
+                break;
+            case 'visita-servicios':
+                alert('Visita de Servicios - Próximamente');
+                break;
+            case 'generar-reporte':
+                window.location.href = '/reports/planes-accion';
+                break;
+            case 'nueva-empresa':
+                window.location.href = '/nueva-empresa';
+                break;
+        }
+    }
+
 </script>

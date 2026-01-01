@@ -113,6 +113,14 @@
             </div>
         </div>
         <button class="tab-btn" onclick="showTab('operaciones')">Operaciones</button>
+        <div class="tab-dropdown-wrapper">
+            <button class="tab-btn" onclick="toggleTabDropdown(event)">Operaciones ▼</button>
+            <div class="tab-dropdown-menu">
+                <div class="dropdown-header">Operaciones</div>
+                <a href="javascript:void(0)" class="dropdown-item" onclick="handleAction('visita')">Visita</a>
+                <a href="javascript:void(0)" class="dropdown-item" onclick="handleAction('visita-servicios')">Visita de Servicios</a>
+            </div>
+        </div>
         <button class="tab-btn" onclick="showTab('maestros')">Maestros</button>
     </div>
 </div>

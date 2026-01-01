@@ -94,14 +94,25 @@ async function viewPlanesAccion(req, res) {
 // Crear nueva empresa
 async function createEmpresa(req, res) {
     try {
-        if (!supabase) {
-            return res.status(500).json({ error: 'Database connection not available' });
-        }
-
         const { nombre, rubro, contacto, telefono, email, direccion, cuit } = req.body;
 
         if (!nombre) {
             return res.status(400).json({ error: 'El nombre de la empresa es requerido' });
+        }
+
+        if (!supabase) {
+            // En modo demo, retornar fake data
+            return res.status(201).json({
+                id: 'demo-' + Date.now(),
+                nombre,
+                rubro,
+                contacto,
+                telefono,
+                email,
+                direccion,
+                cuit,
+                created_at: new Date().toISOString()
+            });
         }
 
         const { data, error } = await supabase

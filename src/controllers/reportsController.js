@@ -261,7 +261,22 @@ exports.createVisita = async (req, res, next) => {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
 
-    const { data, error } = await getSupabase()
+    const sb = getSupabase();
+    if (!sb) {
+      // En modo demo, retornar fake data
+      return res.status(201).json({
+        id: 'demo-' + Date.now(),
+        empresa_id,
+        locacion_id,
+        tipo_formulario,
+        fecha,
+        observaciones,
+        estado: 'completado',
+        created_at: new Date().toISOString()
+      });
+    }
+
+    const { data, error } = await sb
       .from('visitas_formulario')
       .insert([{
         empresa_id,

@@ -384,19 +384,12 @@
         dropdown.classList.toggle('active');
     }
 
-    // Permitir clicks en dropdown items para navegar
-    document.addEventListener('click', function(event) {
-        // Si es un enlace dentro del dropdown, dejarlo funcionar
-        if (event.target.tagName === 'A' && event.target.classList.contains('dropdown-item')) {
-            return true;
-        }
-        
-        // Cerrar dropdown al hacer click fuera
-        const dropdown = document.querySelector('.tab-dropdown-menu.active');
-        const wrapper = document.querySelector('.tab-dropdown-wrapper');
-        if (dropdown && wrapper && !wrapper.contains(event.target)) {
+    // Cerrar dropdown al hacer click en cualquier parte del documento
+    document.addEventListener('click', function() {
+        const dropdowns = document.querySelectorAll('.tab-dropdown-menu.active');
+        dropdowns.forEach(dropdown => {
             dropdown.classList.remove('active');
-        }
+        });
     });
 
     // Inicializar gráfico

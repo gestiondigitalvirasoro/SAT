@@ -35,6 +35,18 @@ class AuthController {
     if (req.session.user) {
       return res.redirect('/dashboard');
     }
+    
+    // Auto-login en modo demo si no hay sesión
+    if (isDemoMode) {
+      req.session.user = {
+        id: 1,
+        name: 'Administrador Demo',
+        email: 'admin@potenciaactiva.com',
+        role: 'admin'
+      };
+      return res.redirect('/dashboard');
+    }
+    
     res.render('layouts/main', { 
       title: 'POTENCIA ACTIVA - Login', 
       page: '../pages/login' 

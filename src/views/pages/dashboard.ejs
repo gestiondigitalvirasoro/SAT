@@ -3,120 +3,245 @@
 <%- include('../partials/head', { title: 'Dashboard - Potencia Activa' }) %>
 <body>
     <%- include('../partials/navbar-dashboard') %>
+    <%- include('../partials/dashboard-nav-tabs') %>
     
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div class="welcome-section">
-                <h1>¡Bienvenido a POTENCIA ACTIVA!</h1>
-                <p>Sistema de Alerta Temprana - Panel de Control</p>
-            </div>
-            <div class="user-info">
-                <div class="user-avatar">
-                    <span>👤</span>
-                </div>
-                <div class="user-details">
-                    <h3><%= user ? user.name : 'Usuario Admin' %></h3>
-                    <p>Técnico en SHyT</p>
-                </div>
-            </div>
-        </div>
+    <div class="dashboard-container" style="margin-top: 20px;">
+        <style>
+            .dashboard-container {
+                padding: 20px;
+                max-width: 1400px;
+                margin: 0 auto;
+                background: #f5f5f5;
+                min-height: 100vh;
+            }
 
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-content">
-                <h3>15</h3>
-                <p>Reportes Pendientes</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">✅</div>
-            <div class="stat-content">
-                <h3>42</h3>
-                <p>Inspecciones Completadas</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">⚠️</div>
-            <div class="stat-content">
-                <h3>3</h3>
-                <p>Alertas Activas</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">🏢</div>
-            <div class="stat-content">
-                <h3>8</h3>
-                <p>Empresas Asignadas</p>
-            </div>
-        </div>
-    </div>
+            .dashboard-grid {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 30px;
+                margin-bottom: 30px;
+            }
 
-    <div class="dashboard-content">
-        <div class="main-actions">
-            <h2>Acciones Rápidas</h2>
-            <div class="action-cards">
-                <div class="action-card">
+            .chart-card {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .chart-card h2 {
+                margin: 0 0 10px 0;
+                font-size: 1.5rem;
+                color: #333;
+            }
+
+            .chart-subtitle {
+                color: #666;
+                font-size: 0.9rem;
+                margin-bottom: 20px;
+            }
+
+            .actions-card {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .actions-card h2 {
+                margin: 0 0 20px 0;
+                font-size: 1.5rem;
+                color: #333;
+            }
+
+            .action-item {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 15px;
+                margin-bottom: 15px;
+                background: #f9f9f9;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .action-item:hover {
+                background: #fffbf0;
+                border-left: 4px solid #FF6B35;
+                padding-left: 20px;
+            }
+
+            .action-icon {
+                font-size: 1.5rem;
+                min-width: 30px;
+            }
+
+            .action-text h3 {
+                margin: 0;
+                font-size: 1rem;
+                color: #333;
+            }
+
+            .action-text p {
+                margin: 5px 0 0 0;
+                font-size: 0.85rem;
+                color: #666;
+            }
+
+            .action-btn {
+                background: none;
+                border: none;
+                color: #FF6B35;
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 5px;
+                margin-left: auto;
+            }
+
+            .action-btn:hover {
+                transform: scale(1.2);
+            }
+
+            @media (max-width: 1024px) {
+                .dashboard-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .dashboard-container {
+                    padding: 10px;
+                }
+
+                .chart-card,
+                .actions-card {
+                    padding: 15px;
+                }
+
+                .chart-card h2,
+                .actions-card h2 {
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
+
+        <div class="dashboard-grid">
+            <!-- Gráfico de Visitas -->
+            <div class="chart-card">
+                <h2>Visitas</h2>
+                <p class="chart-subtitle">Últimos 4 meses</p>
+                <canvas id="visitsChart" height="80"></canvas>
+            </div>
+
+            <!-- Panel de Acciones -->
+            <div class="actions-card">
+                <h2>Acciones</h2>
+                
+                <div class="action-item" onclick="handleAction('nueva-visita')">
                     <div class="action-icon">📝</div>
-                    <h3>Nuevo Reporte</h3>
-                    <p>Crear un nuevo informe de inspección</p>
-                    <button class="btn btn-primary">Crear Reporte</button>
+                    <div class="action-text">
+                        <h3>Nueva Visita</h3>
+                        <p>Registrar nueva visita</p>
+                    </div>
+                    <button class="action-btn">+</button>
                 </div>
-                <div class="action-card">
-                    <div class="action-icon">🔍</div>
-                    <h3>Relevamiento de Riesgos</h3>
-                    <p>Realizar evaluación general de riesgos</p>
-                    <button class="btn btn-primary">Iniciar Relevamiento</button>
-                </div>
-                <div class="action-card">
-                    <div class="action-icon">🧯</div>
-                    <h3>Control de Extintores</h3>
-                    <p>Registrar estado de extintores</p>
-                    <button class="btn btn-primary">Controlar Extintores</button>
-                </div>
-                <div class="action-card">
-                    <div class="action-icon">📅</div>
-                    <h3>Planificar Visitas</h3>
-                    <p>Programar recorridas y controles</p>
-                    <button class="btn btn-primary">Planificar</button>
-                </div>
-            </div>
-        </div>
 
-        <div class="recent-activity">
-            <h2>Actividad Reciente</h2>
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon">✅</div>
-                    <div class="activity-details">
-                        <h4>Reporte completado - Empresa ABC S.A.</h4>
-                        <p>Hace 2 horas</p>
+                <div class="action-item" onclick="handleAction('visita-servicios')">
+                    <div class="action-icon">🔧</div>
+                    <div class="action-text">
+                        <h3>Visita de Servicios</h3>
+                        <p>Registrar servicio</p>
                     </div>
+                    <button class="action-btn">+</button>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon">⚠️</div>
-                    <div class="activity-details">
-                        <h4>Alerta generada - Extintor vencido</h4>
-                        <p>Hace 4 horas</p>
+
+                <div class="action-item" onclick="handleAction('generar-reporte')">
+                    <div class="action-icon">📊</div>
+                    <div class="action-text">
+                        <h3>Generar Reporte</h3>
+                        <p>Crear nuevo reporte</p>
                     </div>
+                    <button class="action-btn">+</button>
                 </div>
-                <div class="activity-item">
-                    <div class="activity-icon">📝</div>
-                    <div class="activity-details">
-                        <h4>Nuevo cliente asignado - Constructora XYZ</h4>
-                        <p>Ayer</p>
+
+                <div class="action-item" onclick="handleAction('nueva-empresa')">
+                    <div class="action-icon">🏢</div>
+                    <div class="action-text">
+                        <h3>Nueva Empresa</h3>
+                        <p>Agregar empresa</p>
                     </div>
+                    <button class="action-btn">+</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <script>
+        // Datos de ejemplo para el gráfico
+        const chartData = {
+            labels: ['Sep', 'Oct', 'Nov', 'Dic'],
+            data: [7, 6, 4, 10]
+        };
+
+        // Inicializar gráfico
+        const ctx = document.getElementById('visitsChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Visitas',
+                    data: chartData.data,
+                    backgroundColor: '#4A90E2',
+                    borderColor: '#4A90E2',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 12,
+                        ticks: {
+                            stepSize: 2
+                        }
+                    }
+                }
+            }
+        });
+
+        // Manejador de acciones
+        function handleAction(action) {
+            console.log('Acción seleccionada:', action);
+            
+            switch(action) {
+                case 'nueva-visita':
+                    alert('Nueva Visita - Próximamente');
+                    // Aquí iría la navegación a crear nueva visita
+                    break;
+                case 'visita-servicios':
+                    alert('Visita de Servicios - Próximamente');
+                    break;
+                case 'generar-reporte':
+                    alert('Generar Reporte - Próximamente');
+                    break;
+                case 'nueva-empresa':
+                    alert('Nueva Empresa - Próximamente');
+                    break;
+            }
+        }
+    </script>
+
     <%- include('../partials/footer') %>
 </body>
 </html>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

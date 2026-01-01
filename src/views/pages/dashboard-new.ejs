@@ -263,8 +263,8 @@
                 <button class="tab-btn" onclick="toggleTabDropdown(event)">Operaciones ▼</button>
                 <div class="tab-dropdown-menu">
                     <div class="dropdown-header">Operaciones</div>
-                    <a href="/visitas" class="dropdown-item" onclick="event.stopPropagation()">Visita</a>
-                    <a href="javascript:void(0)" class="dropdown-item" onclick="alert('Visita de Servicios - Próximamente'); event.stopPropagation();">Visita de Servicios</a>
+                    <a href="/visitas" class="dropdown-item">Visita</a>
+                    <a href="javascript:void(0)" class="dropdown-item" onclick="alert('Visita de Servicios - Próximamente')">Visita de Servicios</a>
                 </div>
             </div>
             <button class="tab-btn" onclick="showTab('maestros')">Maestros</button>
@@ -384,10 +384,10 @@
         dropdown.classList.toggle('active');
     }
 
-    // Permitir clicks en dropdown items
+    // Permitir clicks en dropdown items para navegar
     document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('dropdown-item')) {
-            event.stopPropagation();
+        // Si es un enlace dentro del dropdown, dejarlo funcionar
+        if (event.target.tagName === 'A' && event.target.classList.contains('dropdown-item')) {
             return true;
         }
         

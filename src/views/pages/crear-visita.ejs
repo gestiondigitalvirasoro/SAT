@@ -247,7 +247,7 @@
 
         <!-- Header -->
         <div class="page-header">
-            <h1>Detalle de Visita <strong style="color: #999;">{NUEVA VISITA}</strong></h1>
+            <h1 id="pageTitle">Detalle de Visita <strong style="color: #999;">{NUEVA VISITA}</strong></h1>
             <a href="/visitas" class="volver-link">volver a visitas</a>
         </div>
 
@@ -345,15 +345,61 @@
     </div>
 
     <script>
-        // Cargar empresas al iniciar
+        // Mapeo de tipos de visita con sus descripciones
+        const tiposVisita = {
+            'GE': 'Visita Simple',
+            'VL': 'Visita Libre',
+            'RO': 'Informe de visitas - Ropería',
+            'EX': 'Extintores',
+            'PP': 'Verificación de uso EPP',
+            'IL': 'Iluminación',
+            'TI': 'Puesta a tierra',
+            'RU': 'Medición de ruido',
+            'ER': 'Ergonomía'
+        };
+
+        // Obtener el tipo de visita de la URL
+        function obtenerTipoVisita() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('tipo') || 'GE';
+        }
+
+        const tipoVisita = obtenerTipoVisita();
+
+        // Actualizar el título de la página
         document.addEventListener('DOMContentLoaded', function() {
+            const titulo = tiposVisita[tipoVisita] || 'Nueva Visita';
+            document.getElementById('pageTitle').innerHTML = `Detalle de Visita <strong style="color: #999;">{${titulo.toUpperCase()}}</strong>`;
+            
             cargarEmpresas();
             
             // Listener para cambios de empresa
             document.getElementById('empresa').addEventListener('change', function() {
                 cargarLocaciones(this.value);
             });
+
+            // Personalizar campos según el tipo
+            personalizarFormulario(tipoVisita);
         });
+
+        function personalizarFormulario(tipo) {
+            // Mostrar/ocultar campos según el tipo de visita
+            const camposOcultos = {
+                'IL': ['profesional', 'personaAtendio'], // Para iluminación, estos campos no son necesarios
+                'TI': ['profesional', 'personaAtendio'],
+                'RU': ['profesional', 'personaAtendio'],
+                'ER': ['profesional', 'personaAtendio']
+            };
+
+            if (camposOcultos[tipo]) {
+                camposOcultos[tipo].forEach(campo => {
+                    const element = document.querySelector(`[name="${campo}"]`)?.closest('.form-group');
+                    if (element) {
+                        element.style.display = 'none';
+                    }
+                });
+            }
+        }
 
         async function cargarEmpresas() {
             try {
@@ -472,7 +518,7 @@
                         persona_atendio: personaAtendio,
                         comentarios: comentarios,
                         ubicacion: ubicacion,
-                        tipo_formulario: 'Visita Simple'
+                        tipo_formulario: tiposVisita[tipoVisita] || 'Nueva Visita'
                     })
                 });
 

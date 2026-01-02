@@ -253,6 +253,78 @@ exports.viewNotificacionesServicios = async (req, res, next) => {
 };
 
 // Crear nueva visita
+exports.getVisitasPorMes = async (req, res, next) => {
+  try {
+    const { mes, anio } = req.query;
+    
+    if (!mes || !anio) {
+      return res.status(400).json({ error: 'mes y anio son requeridos' });
+    }
+
+    const sb = getSupabase();
+    if (!sb) {
+      // En modo demo, retornar fake data con datos que coincidan con la tabla visible
+      const visitasDemoData = [
+        {
+          id: 'VL-29648',
+          fecha: '2025-11-26',
+          empresa: 'Forestal San Matteo',
+          locacion: 'Mainumby',
+          profesional: 'Ing. Julio Ernesto Rodríguez, Téc. Héctor Vallejos',
+          formulario: 'Visita Libre',
+          tarea: 'Asesoramiento profesional, Capacitación, Control de cumplimiento de normativa de higiene y seguridad',
+          estado: 'firmado'
+        },
+        {
+          id: 'GE-17116',
+          fecha: '2025-11-14',
+          empresa: 'Pallets Jauregui',
+          locacion: 'Establecimiento J1 - J2',
+          profesional: 'Ing. Julio Ernesto Rodríguez, Téc. Héctor Vallejos',
+          formulario: 'Visita Simple',
+          tarea: 'Asesoramiento profesional, Capacitación, Control de cumplimiento de normativa de higiene y seguridad',
+          estado: 'firmado'
+        },
+        {
+          id: 'IL-3812',
+          fecha: '2025-11-07',
+          empresa: 'Pallets Jauregui',
+          locacion: 'Establecimiento J1',
+          profesional: 'Ing. Julio Ernesto Rodríguez, Téc. Héctor Vallejos',
+          formulario: 'Iluminación',
+          tarea: '',
+          estado: 'firmado'
+        },
+        {
+          id: 'VL-28329',
+          fecha: '2025-11-04',
+          empresa: 'DT PRODUCCIÓN Y SERVICIOS',
+          locacion: 'BOSQUE DEL PLATA',
+          profesional: 'Ing. Julio Ernesto Rodríguez, Téc. Hector Vallejos',
+          formulario: 'Visita Libre',
+          tarea: 'Asesoramiento profesional, Capacitación, Control de cumplimiento de normativa de higiene y seguridad',
+          estado: 'firmado'
+        }
+      ];
+      return res.json(visitasDemoData);
+    }
+
+    // En producción, consultar a Supabase filtrado por mes
+    const { data, error } = await sb
+      .from('visitas_formulario')
+      .select('*')
+      .gte('fecha', `${anio}-${String(mes).padStart(2, '0')}-01`)
+      .lte('fecha', `${anio}-${String(mes).padStart(2, '0')}-31`)
+      .order('fecha', { ascending: false });
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err) {
+    console.error('Error obteniendo visitas por mes:', err);
+    res.status(500).json({ error: 'Error al obtener visitas' });
+  }
+};
+
 exports.createVisita = async (req, res, next) => {
   try {
     const { empresa_id, locacion_id, tipo_formulario, fecha, observaciones } = req.body;

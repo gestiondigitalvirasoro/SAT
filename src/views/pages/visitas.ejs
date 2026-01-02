@@ -238,6 +238,7 @@
             const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             document.getElementById('mesAnio').textContent = meses[mesActual] + ' de ' + anioActual;
+            cargarVisitas();
         }
 
         function previousMonth() {
@@ -262,6 +263,39 @@
             mesActual = new Date().getMonth();
             anioActual = new Date().getFullYear();
             actualizarMesAnio();
+        }
+
+        async function cargarVisitas() {
+            try {
+                const mesFormato = mesActual + 1; // JavaScript months are 0-11
+                const response = await fetch(`/api/visitas-mes?mes=${mesFormato}&anio=${anioActual}`);
+                const visitas = await response.json();
+                
+                const tbody = document.querySelector('.tabla-visitas tbody');
+                tbody.innerHTML = '';
+                
+                visitas.forEach((visita, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <span style="display: flex; gap: 8px; align-items: center;">
+                                👁️
+                                <span style="cursor: pointer; color: #2563eb;">✏️</span>
+                            </span>
+                        </td>
+                        <td>${visita.fecha || visita.created_at?.split('T')[0] || ''}</td>
+                        <td>${visita.empresa || 'N/A'}</td>
+                        <td>${visita.locacion || 'N/A'}</td>
+                        <td>${visita.profesional || 'N/A'}</td>
+                        <td>${visita.formulario || 'N/A'}</td>
+                        <td>${visita.tarea || ''}</td>
+                        <td style="text-align: center;">🔒</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error cargando visitas:', error);
+            }
         }
 
         // Inicializar

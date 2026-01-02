@@ -19,6 +19,9 @@ router.post('/empresas', planesAccionController.createEmpresa);
 // Visitas por Formulario
 router.get('/visitas-formulario', reportsController.getVisitasFormulario);
 
+// Visitas por mes
+router.get('/visitas-mes', reportsController.getVisitasPorMes);
+
 // Crear nueva visita
 router.post('/visitas', reportsController.createVisita);
 

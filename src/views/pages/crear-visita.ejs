@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<body>
+    <div class="crear-visita-container" style="margin-top: 100px; padding: 40px 20px;">
+        <style>
+            .crear-visita-container {
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+
+            .page-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                gap: 20px;
+            }
+
+            .page-header h1 {
+                margin: 0;
+                font-size: 1.8rem;
+                color: #333;
+            }
+
+            .volver-link {
+                color: #2563eb;
+                text-decoration: none;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .volver-link:hover {
+                text-decoration: underline;
+            }
+
+            .form-section {
+                background: white;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .form-group label {
+                font-weight: 600;
+                color: #333;
+                margin-bottom: 8px;
+                font-size: 0.95rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 10px 12px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 0.95rem;
+                font-family: inherit;
+                background: white;
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .form-full {
+                grid-column: 1 / -1;
+            }
+
+            .ubicacion-group {
+                position: relative;
+            }
+
+            .ubicacion-icon {
+                position: absolute;
+                right: 12px;
+                top: 38px;
+                font-size: 1.3rem;
+                cursor: pointer;
+                color: #2563eb;
+            }
+
+            .ubicacion-group textarea {
+                padding-right: 40px;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #333;
+                margin: 20px 0 15px 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .section-title .add-btn {
+                background: #2563eb;
+                color: white;
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                font-size: 1.2rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.3s ease;
+            }
+
+            .section-title .add-btn:hover {
+                background: #1d4ed8;
+            }
+
+            .riesgos-container {
+                display: grid;
+                gap: 15px;
+                margin-top: 15px;
+            }
+
+            .riesgo-item {
+                background: #f9fafb;
+                padding: 15px;
+                border-radius: 6px;
+                border-left: 4px solid #2563eb;
+                position: relative;
+            }
+
+            .riesgo-item.empty {
+                padding: 30px;
+                text-align: center;
+                color: #999;
+                border-left-color: #ddd;
+            }
+
+            .riesgo-remove {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #ef4444;
+                color: white;
+                border: none;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem;
+            }
+
+            .riesgo-remove:hover {
+                background: #dc2626;
+            }
+
+            .buttons-container {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                margin-top: 30px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                border: none;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary {
+                background: #2563eb;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background: #1d4ed8;
+            }
+
+            .btn-secondary {
+                background: #e5e7eb;
+                color: #333;
+            }
+
+            .btn-secondary:hover {
+                background: #d1d5db;
+            }
+
+            @media (max-width: 768px) {
+                .crear-visita-container {
+                    padding: 20px 15px;
+                }
+
+                .page-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .form-section {
+                    padding: 20px;
+                }
+
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .buttons-container {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+
+        <!-- Header -->
+        <div class="page-header">
+            <h1>Detalle de Visita <strong style="color: #999;">{NUEVA VISITA}</strong></h1>
+            <a href="/visitas" class="volver-link">volver a visitas</a>
+        </div>
+
+        <!-- Formulario -->
+        <form id="formVisita" class="form-section">
+            <!-- Datos principales -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="empresa">Empresa</label>
+                    <select id="empresa" name="empresa" required>
+                        <option value="">-- seleccionar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" required value="2026-01-02">
+                </div>
+            </div>
+
+            <!-- Locación, Profesional -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="locacion">Locación</label>
+                    <select id="locacion" name="locacion">
+                        <option value="">-- seleccionar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="profesional">Profesional</label>
+                    <select id="profesional" name="profesional">
+                        <option value="">-- seleccionar</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Domicilio, Tareas -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="domicilio">Domicilio</label>
+                    <input type="text" id="domicilio" name="domicilio" placeholder="">
+                </div>
+
+                <div class="form-group">
+                    <label for="tareas">Tareas</label>
+                    <input type="text" id="tareas" name="tareas" placeholder="">
+                </div>
+            </div>
+
+            <!-- Persona que nos atendió -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="personaAtendio">Persona que nos atendió</label>
+                    <input type="text" id="personaAtendio" name="personaAtendio" placeholder="">
+                </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="form-grid">
+                <div class="form-group form-full">
+                    <label for="comentarios">Comentarios</label>
+                    <textarea id="comentarios" name="comentarios" placeholder=""></textarea>
+                </div>
+            </div>
+
+            <!-- Ubicación de la visita -->
+            <div class="form-grid">
+                <div class="form-group form-full ubicacion-group">
+                    <label for="ubicacion">Ubicación de la visita</label>
+                    <textarea id="ubicacion" name="ubicacion" placeholder=""></textarea>
+                    <span class="ubicacion-icon">📍</span>
+                </div>
+            </div>
+
+            <!-- Riesgos -->
+            <div style="margin-top: 40px;">
+                <div class="section-title">
+                    Riesgos
+                    <button type="button" class="add-btn" onclick="agregarRiesgo()">+</button>
+                </div>
+                <div id="riesgosContainer" class="riesgos-container">
+                    <div class="riesgo-item empty">
+                        No hay riesgos registrados
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="buttons-container">
+                <button type="submit" class="btn btn-primary">Grabar</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/visitas'">volver a visitas</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Cargar empresas al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEmpresas();
+            
+            // Listener para cambios de empresa
+            document.getElementById('empresa').addEventListener('change', function() {
+                cargarLocaciones(this.value);
+            });
+        });
+
+        async function cargarEmpresas() {
+            try {
+                const response = await fetch('/api/empresas');
+                const empresas = await response.json();
+                
+                const select = document.getElementById('empresa');
+                
+                empresas.forEach(empresa => {
+                    const option = document.createElement('option');
+                    option.value = empresa.id;
+                    option.textContent = empresa.nombre;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error cargando empresas:', error);
+                alert('Error al cargar empresas');
+            }
+        }
+
+        async function cargarLocaciones(empresaId) {
+            try {
+                if (!empresaId) {
+                    document.getElementById('locacion').innerHTML = '<option value="">-- seleccionar</option>';
+                    return;
+                }
+                
+                const response = await fetch(`/api/locaciones?empresa_id=${empresaId}`);
+                const locaciones = await response.json();
+                
+                const select = document.getElementById('locacion');
+                select.innerHTML = '<option value="">-- seleccionar</option>';
+                
+                locaciones.forEach(locacion => {
+                    const option = document.createElement('option');
+                    option.value = locacion.id;
+                    option.textContent = locacion.nombre;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error cargando locaciones:', error);
+            }
+        }
+
+        let riesgosCount = 0;
+
+        function agregarRiesgo() {
+            const container = document.getElementById('riesgosContainer');
+            
+            // Remover el mensaje de vacío si existe
+            const emptyItem = container.querySelector('.empty');
+            if (emptyItem) {
+                emptyItem.remove();
+            }
+
+            const riesgoItem = document.createElement('div');
+            riesgoItem.className = 'riesgo-item';
+            riesgoItem.id = 'riesgo-' + riesgosCount;
+            riesgoItem.innerHTML = `
+                <input type="text" placeholder="Descripción del riesgo" name="riesgo[]" style="width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem;">
+                <button type="button" class="riesgo-remove" onclick="removerRiesgo('riesgo-${riesgosCount}')">×</button>
+            `;
+            
+            container.appendChild(riesgoItem);
+            riesgosCount++;
+        }
+
+        function removerRiesgo(id) {
+            const item = document.getElementById(id);
+            if (item) {
+                item.remove();
+            }
+            
+            // Si no hay riesgos, mostrar mensaje vacío
+            const container = document.getElementById('riesgosContainer');
+            if (container.children.length === 0) {
+                const emptyItem = document.createElement('div');
+                emptyItem.className = 'riesgo-item empty';
+                emptyItem.textContent = 'No hay riesgos registrados';
+                container.appendChild(emptyItem);
+            }
+        }
+
+        // Manejo del formulario
+        document.getElementById('formVisita').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const empresaId = document.getElementById('empresa').value;
+            const fecha = document.getElementById('fecha').value;
+            const locacionId = document.getElementById('locacion').value;
+            const profesional = document.getElementById('profesional').value;
+            const domicilio = document.getElementById('domicilio').value;
+            const tareas = document.getElementById('tareas').value;
+            const personaAtendio = document.getElementById('personaAtendio').value;
+            const comentarios = document.getElementById('comentarios').value;
+            const ubicacion = document.getElementById('ubicacion').value;
+
+            if (!empresaId || !fecha) {
+                alert('Por favor completa los campos requeridos');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/visitas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        empresa_id: empresaId,
+                        locacion_id: locacionId || null,
+                        fecha: fecha,
+                        profesional: profesional,
+                        domicilio: domicilio,
+                        tareas: tareas,
+                        persona_atendio: personaAtendio,
+                        comentarios: comentarios,
+                        ubicacion: ubicacion,
+                        tipo_formulario: 'Visita Simple'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al guardar la visita');
+                }
+
+                alert('Visita guardada correctamente');
+                window.location.href = '/visitas';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar la visita: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -44,6 +44,14 @@ router.get('/nueva-empresa', requireAuth, (req, res) => {
   });
 });
 
+router.get('/crear-visita', requireAuth, (req, res) => {
+  res.render('layouts/dashboard', { 
+    title: 'Crear Visita - POTENCIA ACTIVA',
+    page: '../pages/crear-visita',
+    user: req.session.user
+  });
+});
+
 // Rutas protegidas de reportes
 router.get('/reports/planes-accion', requireAuth, planesAccionController.viewPlanesAccion);
 router.get('/reports/visitas-formulario', requireAuth, reportsController.viewVisitasFormulario);
